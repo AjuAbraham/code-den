@@ -126,6 +126,14 @@ export const logoutUser = asyncHandler((req, res) => {
 export const checkUser = asyncHandler((req, res) => {
   try {
     const user = req.user;
+    const { password, updatedAt, createdAt, ...restUserData } = user;
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, "User authenticated successfully", {
+          user: { ...restUserData },
+        })
+      );
   } catch (error) {
     console.log("register error");
   }
