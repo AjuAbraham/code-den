@@ -1,4 +1,4 @@
-class ErrorHandler {
+class ErrorHandler extends Error {
   constructor(
     statusCode = 400,
     message = "Something went wrong",
@@ -7,7 +7,8 @@ class ErrorHandler {
   ) {
     super(message);
     this.statusCode = statusCode;
-    this.message = message;
+    this.success = false;
+    this.reason = message;
     this.error = error;
     if (this.stack) {
       this.stack = stack;
@@ -16,3 +17,4 @@ class ErrorHandler {
     }
   }
 }
+export default ErrorHandler;
