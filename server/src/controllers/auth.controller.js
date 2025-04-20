@@ -14,7 +14,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     }
     const exsistingUser = await db.user.findUnique({
       where: {
-        email
+        email,
       },
     });
     console.log(exsistingUser);
@@ -57,19 +57,72 @@ export const registerUser = asyncHandler(async (req, res) => {
       .json({ message: error.message, success: false });
   }
 });
-export const loginUser = asyncHandler((req, res) => {
+
+export const loginUser = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) {
+      throw new ErrorHandler(400, "All fields are required");
+    }
+    const exsistingUser = await db.user.findUnique({
+      where: { email },
+    });
+    if (!exsistingUser) {
+      throw new ErrorHandler(401, "User doesn't exsist");
+    }
+    const isValidPassword = await bcrypt.compare(
+      password,
+      exsistingUser.password
+    );
+    if (!isValidPassword) {
+      throw new ErrorHandler(401, "Invalid Credentials");
+    }
+    const generateToken = jwt.sign(
+      { id: exsistingUser.id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+    res.cookie("token", generateToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV !== "development",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    return res.status(201).json(
+      new ApiResponse(201, "User logged in successfully", {
+        username: exsistingUser.username,
+        avatar: exsistingUser.avatar,
+      })
+    );
   } catch (error) {
-    console.log("register error");
+    console.log("error while login", error);
+    return res
+      .status(error.statusCode)
+      .json({ message: error.message, success: false });
   }
 });
+
 export const logoutUser = asyncHandler((req, res) => {
   try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV !== "development",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "User logged out successfully"));
   } catch (error) {
-    console.log("register error");
+    console.log("error while logout", error);
+    return res
+      .status(error.statusCode)
+      .json({ message: error.message, success: false });
   }
 });
+
 export const checkUser = asyncHandler((req, res) => {
   try {
     const user = req.user;
