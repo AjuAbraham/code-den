@@ -25,5 +25,14 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
       .json({ message: error.message, success: false });
   }
 });
+const checkAdmin = (req, res, next) => {
+  const { role } = req.user;
+  if (!role && role !== "ADMIN") {
+    return res.status(400).json({
+      message: "Forbidden: You don't have permission to access this resoure",
+    });
+  }
+  next();
+};
 
-export default authMiddleware;
+export { authMiddleware, checkAdmin };
