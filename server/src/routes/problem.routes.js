@@ -12,8 +12,8 @@ import { authMiddleware, checkAdmin } from "../middlewares/auth.middleware.js";
 const problemRouter = Router();
 
 problemRouter.post("/create", authMiddleware, checkAdmin, createProblem);
-problemRouter.post("/getall", authMiddleware, getAllProblem);
-problemRouter.post("/get/:id", authMiddleware, getProblemById);
+problemRouter.get("/getall", authMiddleware, getAllProblem);
+problemRouter.get("/get/:id", authMiddleware, getProblemById);
 problemRouter.put(
   "/update-problem/:id",
   authMiddleware,
