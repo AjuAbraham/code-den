@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import problemRouter from "./routes/problem.routes.js";
+import executionRouter from "./routes/execution.routes.js";
 dotenv.config({ path: "./.env" });
 
 const app = express();
@@ -15,6 +16,7 @@ const port = process.env.PORT;
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/problems", problemRouter);
+app.use("/api/v1/execute", executionRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on ${port}`);

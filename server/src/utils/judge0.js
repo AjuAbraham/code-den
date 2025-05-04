@@ -22,7 +22,6 @@ export const submitBatch = async (submissions) => {
 export const customDelay = (miliSecond) =>
   new Promise((resolve) => setTimeout(resolve, miliSecond));
 export const pollBatchResults = async (tokens) => {
-  console.log("tokens", tokens);
   while (true) {
     const { data } = await axios.get(
       `${process.env.JUDGE0_URL}/submissions/batch`,
@@ -37,4 +36,15 @@ export const pollBatchResults = async (tokens) => {
     if (isAllCasesResolved) return results;
     await customDelay(1000);
   }
+};
+
+export const getLanguageName = (languageId) => {
+  if (!languageId) return null;
+  const languageMap = {
+    71: "Python",
+    74: "TypeScript",
+    63: "Javascript",
+    62: "Java",
+  };
+  return languageMap[languageId] || "Unkown";
 };
