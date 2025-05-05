@@ -12,7 +12,10 @@ export const createPlaylist = asyncHandler(async (req, res) => {
     }
     const exsistingPlaylist = await db.playlist.findUnique({
       where: {
-        title,
+        title_userId: {
+          title,
+          userId,
+        },
       },
     });
     if (exsistingPlaylist) {
@@ -30,7 +33,9 @@ export const createPlaylist = asyncHandler(async (req, res) => {
     }
     res.status(201).json(new ApiResponse(201, "Playlist created Successfully"));
   } catch (error) {
-    res.status(error.status || 500).json(error.message);
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -56,7 +61,9 @@ export const getAllPlaylists = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, "playlist fetched successfully", allPaylists));
   } catch (error) {
-    res.status(error.status || 500).json(error.message);
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -87,7 +94,9 @@ export const getPlaylistDetail = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, "Playlist fetched successfully", playlist));
   } catch (error) {
-    res.status(error.status || 500).json(error.message);
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -109,7 +118,9 @@ export const AddProblemToPlaylist = asyncHandler(async (req, res) => {
     }
     res.status(201).json(new ApiResponse(201, "Problem added successfully"));
   } catch (error) {
-    res.status(error.status || 500).json(error.message);
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -119,21 +130,19 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
     if (!playlistId) {
       throw new ErrorHandler(400, "Playlist id is required");
     }
-    const deletedPlaylsit = await db.playlist.delete({
+    const deletedPlaylist = await db.playlist.delete({
       where: {
         id: playlistId,
       },
     });
-    if (!deletePlaylist) {
+    if (!deletedPlaylist) {
       throw new ErrorHandler(500, "Unable to delete the playlist");
     }
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, "Playlist deleted successfully", deletePlaylist)
-      );
+    res.status(200).json(new ApiResponse(200, "Playlist deleted successfully"));
   } catch (error) {
-    res.status(error.status || 500).json(error.message);
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -147,7 +156,7 @@ export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
     const deltedProblem = await db.problemInPlaylist.deleteMany({
       where: {
         playlistId,
-        playlistId: {
+        problemId: {
           in: problemIds,
         },
       },
@@ -158,12 +167,10 @@ export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
         "Unable to delete the problem from the playlist"
       );
     }
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, "Problem removed successfully", deltedProblem)
-      );
+    res.status(200).json(new ApiResponse(200, "Problem removed successfully"));
   } catch (error) {
-    res.status(error.status || 500).json(error.message);
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
