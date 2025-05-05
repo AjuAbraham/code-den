@@ -212,4 +212,38 @@ export const deleteProblemById = asyncHandler(async (req, res) => {
   }
 });
 
-export const getAllSolvedProblems = asyncHandler(async (req, res) => {});
+export const getAllSolvedProblems = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const solvedProblems = await db.problem.findMany({
+      where: {
+        solvedBy: {
+          some: {
+            userId,
+          },
+        },
+      },
+      include: {
+        solvedBy: {
+          where: {
+            userId,
+          },
+        },
+      },
+    });
+    if (!solvedProblems) {
+      throw new ErrorHandler(500, "Unable to fetch solved problems");
+    }
+    res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Solved Problem fetched successfully",
+          solvedProblems
+        )
+      );
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({ message: error.message });
+  }
+});
