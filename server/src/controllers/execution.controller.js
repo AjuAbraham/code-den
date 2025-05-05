@@ -135,6 +135,8 @@ export const executeCode = asyncHandler(async (req, res) => {
         new ApiResponse(200, "Problem submitted successfully", submittedData)
       );
   } catch (error) {
-    return res.status(error.status || 500).json({ message: error.message });
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });

@@ -20,7 +20,9 @@ export const getAllSubmissions = asyncHandler(async (req, res) => {
         new ApiResponse(200, "Submission fetched successfully", submission)
       );
   } catch (error) {
-    res.status(error.status || 500).json({ message: error.message });
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 export const getSubmissionForProblem = asyncHandler(async (req, res) => {
@@ -48,7 +50,9 @@ export const getSubmissionForProblem = asyncHandler(async (req, res) => {
         new ApiResponse(200, "Submission fetched successfully", submissions)
       );
   } catch (error) {
-    res.status(error.status || 500).json({ message: error.message });
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -77,7 +81,9 @@ export const getAllSubmissionsCountForProblem = asyncHandler(
           )
         );
     } catch (error) {
-      res.status(error.status || 500).json({ message: error.message });
+      res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
     }
   }
 );

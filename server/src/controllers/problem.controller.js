@@ -76,9 +76,9 @@ export const createProblem = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, "Problem Created Successfully"));
     }
   } catch (error) {
-    return res
+    res
       .status(error.statusCode || 500)
-      .json({ message: error.message, success: false });
+      .json({ message: error.message, success: error.success || false });
   }
 });
 export const getAllProblem = asyncHandler(async (req, res) => {
@@ -91,7 +91,9 @@ export const getAllProblem = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, "Problems fetched successfully", problems));
   } catch (error) {
-    res.status(error.statusCode).json({ message: error.message });
+    res
+    .status(error.statusCode || 500)
+    .json({ message: error.message, success: error.success || false });
   }
 });
 export const getProblemById = asyncHandler(async (req, res) => {
@@ -112,7 +114,9 @@ export const getProblemById = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, "Problem fetched successfully!!", problem));
   } catch (error) {
-    return res.status(error.statusCode).json({ message: error.message });
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 export const updateProblemById = asyncHandler(async (req, res) => {
@@ -187,7 +191,9 @@ export const updateProblemById = asyncHandler(async (req, res) => {
         new ApiResponse(200, "Problem updated successfullt", updatedProblem)
       );
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ message: error.message });
+    res
+    .status(error.statusCode || 500)
+    .json({ message: error.message, success: error.success || false });
   }
 });
 export const deleteProblemById = asyncHandler(async (req, res) => {
@@ -208,7 +214,9 @@ export const deleteProblemById = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, "Problem Deleted successfully"));
   } catch (error) {
-    return res.status(error.statusCode).json({ message: error.message });
+    res
+    .status(error.statusCode || 500)
+    .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -244,6 +252,8 @@ export const getAllSolvedProblems = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    return res.status(error.statusCode || 500).json({ message: error.message });
+    res
+    .status(error.statusCode || 500)
+    .json({ message: error.message, success: error.success || false });
   }
 });

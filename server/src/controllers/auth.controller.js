@@ -52,9 +52,9 @@ export const registerUser = asyncHandler(async (req, res) => {
     );
   } catch (error) {
     console.log("error while registering", error);
-    return res
-      .status(error.statusCode)
-      .json({ message: error.message, success: false });
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -98,9 +98,9 @@ export const loginUser = asyncHandler(async (req, res) => {
     );
   } catch (error) {
     console.log("error while login", error);
-    return res
-      .status(error.statusCode)
-      .json({ message: error.message, success: false });
+    res
+    .status(error.statusCode || 500)
+    .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -117,9 +117,9 @@ export const logoutUser = asyncHandler((req, res) => {
       .json(new ApiResponse(200, "User logged out successfully"));
   } catch (error) {
     console.log("error while logout", error);
-    return res
-      .status(error.statusCode)
-      .json({ message: error.message, success: false });
+    res
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
