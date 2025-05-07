@@ -7,6 +7,7 @@ import problemRouter from "./routes/problem.routes.js";
 import executionRouter from "./routes/execution.routes.js";
 import submissionRouter from "./routes/submissions.routes.js";
 import playlistRouter from "./routes/playlist.routes.js";
+import solutionRouter from "./routes/solutions.routes.js";
 dotenv.config({ path: "./.env" });
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/v1/problems", problemRouter);
 app.use("/api/v1/execute", executionRouter);
 app.use("/api/v1/submissions", submissionRouter);
 app.use("/api/v1/playlists", playlistRouter);
+app.use("/api/v1/solutions", solutionRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on ${port}`);

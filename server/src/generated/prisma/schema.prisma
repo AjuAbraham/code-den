@@ -26,18 +26,21 @@ enum Difficulty {
 }
 
 model User {
-  id             String          @id @default(uuid())
-  username       String?
-  email          String          @unique
-  password       String
-  avatar         String?
-  role           UserRole        @default(USER)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  problems       Problem[]
-  submission     Submission[]
-  solvedProblems ProblemSolved[]
-  Playlist       Playlist[]
+  id                 String               @id @default(uuid())
+  username           String?
+  email              String               @unique
+  password           String
+  avatar             String?
+  role               UserRole             @default(USER)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  problems           Problem[]
+  submission         Submission[]
+  solvedProblems     ProblemSolved[]
+  Playlist           Playlist[]
+  solutions          Solutions[]
+  solutionDiscussion SolutionDiscussion[]
+  solutionLike       SolutionLike[]
 }
 
 model Problem {
@@ -60,6 +63,7 @@ model Problem {
   submission         Submission[]
   solvedBy           ProblemSolved[]
   problemsPlaylists  ProblemInPlaylist[]
+  solutions          Solutions[]
   user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -138,4 +142,45 @@ model ProblemInPlaylist {
   playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
 
   @@unique([playlistId, problemId])
+}
+
+model Solutions {
+  id                 String               @id @default(uuid())
+  title              String
+  tags               String[]
+  content            String
+  userId             String
+  problemId          String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  likes              SolutionLike[]
+  solutionDiscussion SolutionDiscussion[]
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problem            Problem              @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model SolutionDiscussion {
+  id         String               @id @default(uuid())
+  content    String
+  userId     String
+  solutionId String
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  parentId   String?
+  children   SolutionDiscussion[] @relation("ParentChild")
+  parent     SolutionDiscussion?  @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  solution   Solutions            @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+}
+
+model SolutionLike {
+  id         String    @id @default(uuid())
+  userId     String
+  solutionId String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  solution   Solutions @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, solutionId])
 }

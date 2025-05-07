@@ -92,8 +92,8 @@ export const getAllProblem = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "Problems fetched successfully", problems));
   } catch (error) {
     res
-    .status(error.statusCode || 500)
-    .json({ message: error.message, success: error.success || false });
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 export const getProblemById = asyncHandler(async (req, res) => {
@@ -105,6 +105,13 @@ export const getProblemById = asyncHandler(async (req, res) => {
     const problem = await db.problem.findUnique({
       where: {
         id,
+      },
+      include: {
+        solutions: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
     if (!problem) {
@@ -192,8 +199,8 @@ export const updateProblemById = asyncHandler(async (req, res) => {
       );
   } catch (error) {
     res
-    .status(error.statusCode || 500)
-    .json({ message: error.message, success: error.success || false });
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 export const deleteProblemById = asyncHandler(async (req, res) => {
@@ -215,8 +222,8 @@ export const deleteProblemById = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "Problem Deleted successfully"));
   } catch (error) {
     res
-    .status(error.statusCode || 500)
-    .json({ message: error.message, success: error.success || false });
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -253,7 +260,7 @@ export const getAllSolvedProblems = asyncHandler(async (req, res) => {
       );
   } catch (error) {
     res
-    .status(error.statusCode || 500)
-    .json({ message: error.message, success: error.success || false });
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
