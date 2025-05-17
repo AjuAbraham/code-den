@@ -8,6 +8,7 @@ import executionRouter from "./routes/execution.routes.js";
 import submissionRouter from "./routes/submissions.routes.js";
 import playlistRouter from "./routes/playlist.routes.js";
 import solutionRouter from "./routes/solutions.routes.js";
+import "./cronjobs/ResetStreaks.js";
 dotenv.config({ path: "./.env" });
 
 const app = express();

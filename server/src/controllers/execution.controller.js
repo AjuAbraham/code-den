@@ -125,7 +125,6 @@ export const compileCode = asyncHandler(async (req, res) => {
 
     //submit to db
 
-    console.log(detailedResult);
     const submission = await db.submission.create({
       data: {
         userId: userid,
@@ -152,6 +151,7 @@ export const compileCode = asyncHandler(async (req, res) => {
       },
     });
     if (allPassed) {
+      
       await db.problemSolved.upsert({
         where: {
           problemId_userId: {

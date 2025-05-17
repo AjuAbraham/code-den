@@ -125,6 +125,8 @@ exports.Prisma.UserScalarFieldEnum = {
   avatar: 'avatar',
   role: 'role',
   createdAt: 'createdAt',
+  streak: 'streak',
+  lastActive: 'lastActive',
   updatedAt: 'updatedAt'
 };
 
@@ -234,6 +236,14 @@ exports.Prisma.SolutionLikeScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.DailyActivityScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  date: 'date',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -279,7 +289,8 @@ exports.Prisma.ModelName = {
   ProblemInPlaylist: 'ProblemInPlaylist',
   Solutions: 'Solutions',
   SolutionDiscussion: 'SolutionDiscussion',
-  SolutionLike: 'SolutionLike'
+  SolutionLike: 'SolutionLike',
+  DailyActivity: 'DailyActivity'
 };
 
 /**
