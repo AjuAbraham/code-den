@@ -34,7 +34,7 @@ model User {
   role               UserRole             @default(USER)
   createdAt          DateTime             @default(now())
   streak             Int?                 @default(0)
-  lastActive         DateTime
+  lastActive         DateTime?
   updatedAt          DateTime             @updatedAt
   problems           Problem[]
   submission         Submission[]

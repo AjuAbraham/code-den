@@ -99,8 +99,8 @@ export const loginUser = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log("error while login", error);
     res
-    .status(error.statusCode || 500)
-    .json({ message: error.message, success: error.success || false });
+      .status(error.statusCode || 500)
+      .json({ message: error.message, success: error.success || false });
   }
 });
 
@@ -127,13 +127,11 @@ export const checkUser = asyncHandler((req, res) => {
   try {
     const user = req.user;
     const { password, updatedAt, createdAt, ...restUserData } = user;
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, "User authenticated successfully", {
-          user: { ...restUserData },
-        })
-      );
+    res.status(200).json(
+      new ApiResponse(200, "User authenticated successfully", {
+        user: { ...restUserData },
+      })
+    );
   } catch (error) {
     console.log("register error");
   }

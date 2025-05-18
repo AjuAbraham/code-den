@@ -2,6 +2,7 @@ import { db } from "../db/index.js";
 import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ErrorHandler from "../utils/errorHandler.js";
+import moment from "moment";
 import {
   getLanguageName,
   pollBatchResults,
@@ -60,7 +61,7 @@ export const executeCode = asyncHandler(async (req, res) => {
       };
     });
     return res.status(200).json(
-      new ApiResponse(200, "Problem submitted successfully", {
+      new ApiResponse(200, "Problem executed successfully", {
         allPassed,
         result: detailedResult,
       })
@@ -76,6 +77,7 @@ export const compileCode = asyncHandler(async (req, res) => {
     const { source_code, language_id, stdin, expected_outputs, problemId } =
       req.body;
     const userid = req.user.id;
+    const user = req.user;
     if (!userid) {
       throw new ErrorHandler(400, "User must be logged in");
     }
@@ -151,7 +153,38 @@ export const compileCode = asyncHandler(async (req, res) => {
       },
     });
     if (allPassed) {
-      
+      const yesterday = moment().subtract(1, "day").startOf("day").toDate();
+      const today = moment().startOf("day").toDate();
+      const userActivity = await db.dailyActivity.findUnique({
+        where: {
+          userId_date: {
+            userId: userid,
+            date: today,
+          },
+        },
+      });
+      if (!userActivity) {
+        await db.dailyActivity.create({
+          data: { userId: userid, date: today },
+        });
+      }
+      const lastActive = user.lastActive
+        ? moment(user.lastActive).startOf("day")
+        : null;
+
+      let newStreak = 1;
+      if (lastActive?.isSame(yesterday)) {
+        newStreak = user.streak + 1;
+      }
+      await db.user.update({
+        where: {
+          id: userid,
+        },
+        data: {
+          streak: newStreak,
+          lastActive: today,
+        },
+      });
       await db.problemSolved.upsert({
         where: {
           problemId_userId: {

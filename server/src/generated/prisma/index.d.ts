@@ -2297,7 +2297,7 @@ export namespace Prisma {
     role: $Enums.UserRole
     createdAt: Date
     streak: number | null
-    lastActive: Date
+    lastActive: Date | null
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -2417,7 +2417,7 @@ export namespace Prisma {
       role: $Enums.UserRole
       createdAt: Date
       streak: number | null
-      lastActive: Date
+      lastActive: Date | null
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -15162,7 +15162,7 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeFilter<"User"> | Date | string
     streak?: IntNullableFilter<"User"> | number | null
-    lastActive?: DateTimeFilter<"User"> | Date | string
+    lastActive?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
     problems?: ProblemListRelationFilter
     submission?: SubmissionListRelationFilter
@@ -15183,7 +15183,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     streak?: SortOrderInput | SortOrder
-    lastActive?: SortOrder
+    lastActive?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     problems?: ProblemOrderByRelationAggregateInput
     submission?: SubmissionOrderByRelationAggregateInput
@@ -15207,7 +15207,7 @@ export namespace Prisma {
     role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeFilter<"User"> | Date | string
     streak?: IntNullableFilter<"User"> | number | null
-    lastActive?: DateTimeFilter<"User"> | Date | string
+    lastActive?: DateTimeNullableFilter<"User"> | Date | string | null
     updatedAt?: DateTimeFilter<"User"> | Date | string
     problems?: ProblemListRelationFilter
     submission?: SubmissionListRelationFilter
@@ -15228,7 +15228,7 @@ export namespace Prisma {
     role?: SortOrder
     createdAt?: SortOrder
     streak?: SortOrderInput | SortOrder
-    lastActive?: SortOrder
+    lastActive?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -15249,7 +15249,7 @@ export namespace Prisma {
     role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     streak?: IntNullableWithAggregatesFilter<"User"> | number | null
-    lastActive?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    lastActive?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
@@ -16037,7 +16037,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     submission?: SubmissionCreateNestedManyWithoutUserInput
@@ -16058,7 +16058,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -16079,7 +16079,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     submission?: SubmissionUpdateManyWithoutUserNestedInput
@@ -16100,7 +16100,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -16121,7 +16121,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
   }
 
@@ -16134,7 +16134,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -16147,7 +16147,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -17027,6 +17027,17 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type ProblemListRelationFilter = {
     every?: ProblemWhereInput
     some?: ProblemWhereInput
@@ -17233,6 +17244,20 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type EnumDifficultyFilter<$PrismaModel = never> = {
@@ -17894,6 +17919,10 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type ProblemUpdateManyWithoutUserNestedInput = {
@@ -18829,6 +18858,17 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -18923,6 +18963,20 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumDifficultyFilter<$PrismaModel = never> = {
@@ -19644,7 +19698,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     submission?: SubmissionCreateNestedManyWithoutUserInput
     solvedProblems?: ProblemSolvedCreateNestedManyWithoutUserInput
@@ -19664,7 +19718,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
     solvedProblems?: ProblemSolvedUncheckedCreateNestedManyWithoutUserInput
@@ -19775,7 +19829,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     submission?: SubmissionUpdateManyWithoutUserNestedInput
     solvedProblems?: ProblemSolvedUpdateManyWithoutUserNestedInput
@@ -19795,7 +19849,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
     solvedProblems?: ProblemSolvedUncheckedUpdateManyWithoutUserNestedInput
@@ -19855,7 +19909,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     solvedProblems?: ProblemSolvedCreateNestedManyWithoutUserInput
@@ -19875,7 +19929,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     solvedProblems?: ProblemSolvedUncheckedCreateNestedManyWithoutUserInput
@@ -19995,7 +20049,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     solvedProblems?: ProblemSolvedUpdateManyWithoutUserNestedInput
@@ -20015,7 +20069,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     solvedProblems?: ProblemSolvedUncheckedUpdateManyWithoutUserNestedInput
@@ -20174,7 +20228,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     submission?: SubmissionCreateNestedManyWithoutUserInput
@@ -20194,7 +20248,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -20279,7 +20333,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     submission?: SubmissionUpdateManyWithoutUserNestedInput
@@ -20299,7 +20353,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -20398,7 +20452,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     submission?: SubmissionCreateNestedManyWithoutUserInput
@@ -20418,7 +20472,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -20470,7 +20524,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     submission?: SubmissionUpdateManyWithoutUserNestedInput
@@ -20490,7 +20544,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -20720,7 +20774,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     submission?: SubmissionCreateNestedManyWithoutUserInput
@@ -20740,7 +20794,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -20857,7 +20911,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     submission?: SubmissionUpdateManyWithoutUserNestedInput
@@ -20877,7 +20931,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -21007,7 +21061,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     submission?: SubmissionCreateNestedManyWithoutUserInput
@@ -21027,7 +21081,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -21139,7 +21193,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     submission?: SubmissionUpdateManyWithoutUserNestedInput
@@ -21159,7 +21213,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -21214,7 +21268,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     submission?: SubmissionCreateNestedManyWithoutUserInput
@@ -21234,7 +21288,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -21299,7 +21353,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     submission?: SubmissionUpdateManyWithoutUserNestedInput
@@ -21319,7 +21373,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
@@ -21374,7 +21428,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemCreateNestedManyWithoutUserInput
     submission?: SubmissionCreateNestedManyWithoutUserInput
@@ -21394,7 +21448,7 @@ export namespace Prisma {
     role?: $Enums.UserRole
     createdAt?: Date | string
     streak?: number | null
-    lastActive: Date | string
+    lastActive?: Date | string | null
     updatedAt?: Date | string
     problems?: ProblemUncheckedCreateNestedManyWithoutUserInput
     submission?: SubmissionUncheckedCreateNestedManyWithoutUserInput
@@ -21430,7 +21484,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUpdateManyWithoutUserNestedInput
     submission?: SubmissionUpdateManyWithoutUserNestedInput
@@ -21450,7 +21504,7 @@ export namespace Prisma {
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     streak?: NullableIntFieldUpdateOperationsInput | number | null
-    lastActive?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastActive?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     problems?: ProblemUncheckedUpdateManyWithoutUserNestedInput
     submission?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
