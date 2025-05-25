@@ -24,7 +24,7 @@ app.use("/api/v1/problems", problemRouter);
 app.use("/api/v1/execute", executionRouter);
 app.use("/api/v1/submissions", submissionRouter);
 app.use("/api/v1/playlists", playlistRouter);
-app.use("/api/v1/solutions", solutionRouter)
+app.use("/api/v1/solutions", solutionRouter);
 app.use("/api/v1/suggestion", suggestionRouter);
 
 app.listen(port, () => {
