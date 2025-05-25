@@ -23,7 +23,7 @@ const SignUpForm = () => {
       password: "",
     },
   });
-  const { mutate, isPending, isError, isSuccess } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (formData) => signUpUser(formData),
     onSuccess: (data) => {
       setUser(data.response);
@@ -139,7 +139,7 @@ const SignUpForm = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || !isDirty}
           className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-focus focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-200 transition-all duration-200 font-medium"
         >
           {isPending ? <span className="loading loading-spinner"></span> : null}

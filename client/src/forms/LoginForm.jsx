@@ -1,10 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import loginSchema from "../schema/loginSchema.js";
-import { Code, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import { Code, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "../lib/axios.js";
+import globalStore from "../store/index.js";
 const LoginForm = () => {
+  const { setUser } = globalStore();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -17,8 +22,21 @@ const LoginForm = () => {
       password: "",
     },
   });
-  const onSubmit = async (formData) => {
+  const { mutate, isPending } = useMutation({
+    mutationFn: (formData) => loginUser(formData),
+    onSuccess: (data) => {
+      setUser(data.response);
+      if (data.success) {
+        toast.success("login Successfully");
+      }
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
+    },
+  });
+  const onSubmit = (formData) => {
     try {
+      mutate(formData);
     } catch (error) {
       console.log("error", error);
       return;
@@ -95,6 +113,7 @@ const LoginForm = () => {
         {/* Submit Button */}
         <button
           type="submit"
+          disabled={!isDirty || isPending}
           className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-focus focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-200 transition-all duration-200 font-medium"
         >
           Login In
