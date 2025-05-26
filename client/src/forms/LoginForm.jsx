@@ -4,12 +4,13 @@ import { toast } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import loginSchema from "../schema/loginSchema.js";
 import { Code, Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../lib/axios.js";
 import authStore from "../store/authStore.js";
 const LoginForm = () => {
   const { setUser } = authStore();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -27,7 +28,7 @@ const LoginForm = () => {
     onSuccess: (data) => {
       setUser(data.response);
       if (data.success) {
-        toast.success("login Successfully");
+        navigate("/", { replace: true });
       }
     },
     onError: (error) => {
@@ -114,9 +115,10 @@ const LoginForm = () => {
         <button
           type="submit"
           disabled={!isDirty || isPending}
-          className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-focus focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-200 transition-all duration-200 font-medium"
+          className="w-full bg-primary flex items-center justify-center gap-2  cursor-pointer text-white py-2 rounded-lg hover:bg-primary-focus focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-200 transition-all duration-200 font-medium"
         >
-          Login In
+          {isPending ? <span className="loading loading-spinner"></span> : null}
+          Log In
         </button>
       </form>
       <p className="text-sm text-center text-base-content/70 mt-4">

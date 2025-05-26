@@ -5,11 +5,12 @@ import signUpSchema from "../schema/signUpSchema.js";
 import { useState } from "react";
 import { Code, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signUpUser } from "../lib/axios.js";
 import authStore from "../store/authStore.js";
 const SignUpForm = () => {
   const { setUser } = authStore();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
@@ -28,7 +29,7 @@ const SignUpForm = () => {
     onSuccess: (data) => {
       setUser(data.response);
       if (data.success) {
-        toast.success("Registered Successfully");
+        navigate("/", { replace: true });
       }
     },
     onError: (error) => {
@@ -140,7 +141,7 @@ const SignUpForm = () => {
         <button
           type="submit"
           disabled={isPending || !isDirty}
-          className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-focus focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-200 transition-all duration-200 font-medium"
+          className="w-full flex items-center justify-center gap-2 cursor-pointer bg-primary text-white py-2 rounded-lg hover:bg-primary-focus focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-200 transition-all duration-200 font-medium"
         >
           {isPending ? <span className="loading loading-spinner"></span> : null}
           Sign Up

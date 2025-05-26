@@ -84,6 +84,12 @@ export const loginUser = asyncHandler(async (req, res) => {
         expiresIn: "7d",
       }
     );
+    const {
+      password: pass,
+      updatedAt,
+      createdAt,
+      ...restUserData
+    } = exsistingUser;
     res.cookie("token", generateToken, {
       httpOnly: true,
       sameSite: "strict",
@@ -92,8 +98,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     });
     return res.status(201).json(
       new ApiResponse(201, "User logged in successfully", {
-        username: exsistingUser.username,
-        avatar: exsistingUser.avatar,
+        ...restUserData,
       })
     );
   } catch (error) {
@@ -132,6 +137,29 @@ export const checkUser = asyncHandler((req, res) => {
         user: { ...restUserData },
       })
     );
+  } catch (error) {
+    console.log("register error");
+  }
+});
+export const topContributers = asyncHandler(async (req, res) => {
+  try {
+    const users = await db.user.findMany({
+      where: {
+        streak: {
+          gt: 0,
+        },
+      },
+      orderBy: {
+        streak: "desc",
+      },
+    });
+    if (!users) {
+      throw new ErrorHandler(404, "Unable to get top users");
+    }
+    res
+      .status(200)
+      .json(new ApiResponse(200, "User fetched successfully", users));
+    return users;
   } catch (error) {
     console.log("register error");
   }
