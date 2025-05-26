@@ -3,21 +3,20 @@ import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import globalStore from "./store/index.js";
+import authStore from "./store/authStore.js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { checkUser } from "./lib/axios.js";
 import { useEffect } from "react";
 
 function App() {
-  const { authUser, setUser } = globalStore();
+  const { authUser, setUser } = authStore();
   const queryClient = useQueryClient();
 
-  const { data, isPending, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["check-user"],
     queryFn: checkUser,
+    enabled: !authUser,
     retry: 1,
-    staleTime: 1000 * 60 * 5,
-    onError: (err) => console.error("Auth check error:", err),
   });
 
   useEffect(() => {
@@ -28,14 +27,14 @@ function App() {
     }
   }, [data, authUser, setUser]);
 
-  if (isPending) {
+  if (isLoading) {
     return <span className="loading loading-spinner">Loading...</span>;
   }
 
   if (isError) {
     return (
       <p>
-        {error?.message || "Something went wrong"}
+        Something went wrong: {error?.message || "Unknown error"}
         <button
           onClick={() => queryClient.invalidateQueries(["check-user"])}
           className="ml-2 text-blue-500 underline"

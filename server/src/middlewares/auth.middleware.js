@@ -6,7 +6,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
   try {
     const token = req.cookies.token;
     if (!token) {
-      throw new ErrorHandler(400, "token not passed!!");
+      throw new ErrorHandler(401, "token not passed!!");
     }
     const validToken = jwt.verify(token, process.env.JWT_SECRET);
     if (!validToken) {

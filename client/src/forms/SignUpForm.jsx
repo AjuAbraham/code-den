@@ -7,9 +7,9 @@ import { Code, Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { signUpUser } from "../lib/axios.js";
-import globalStore from "../store/index.js";
+import authStore from "../store/authStore.js";
 const SignUpForm = () => {
-  const { setUser } = globalStore();
+  const { setUser } = authStore();
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
