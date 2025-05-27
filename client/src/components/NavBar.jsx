@@ -20,7 +20,6 @@ const NavBar = () => {
     },
   });
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  console.log("data", authUser);
   return (
     <nav className="sticky top-0 z-50 w-full bg-slate-900/70 backdrop-blur border-b border-slate-800 shadow-md">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">

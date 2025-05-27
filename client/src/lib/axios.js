@@ -24,5 +24,8 @@ export const topContributers = async () => {
   const res = await api.get("/auth/top");
   return res.data;
 };
-
+export const createProblem = async (formData) => {
+  const res = await api.post("/problems/create", formData);
+  return res.data;
+};
 export default api;

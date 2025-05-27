@@ -35,14 +35,7 @@ const LoginForm = () => {
       toast.error(error.response.data.message || "Something went wrong");
     },
   });
-  const onSubmit = (formData) => {
-    try {
-      mutate(formData);
-    } catch (error) {
-      console.log("error", error);
-      return;
-    }
-  };
+  const onSubmit = (formData) => mutate(formData);
 
   return (
     <div className="w-full max-w-md bg-base-200 rounded-2xl shadow-lg p-8 border border-base-300">
