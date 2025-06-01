@@ -45,6 +45,7 @@ const CreateProblemForm = () => {
     defaultValues: {
       testcases: [{ input: "", output: "" }],
       tags: [""],
+      hints: [""],
       examples: {
         JAVASCRIPT: { input: "", output: "", explanation: "" },
         PYTHON: { input: "", output: "", explanation: "" },
@@ -82,10 +83,20 @@ const CreateProblemForm = () => {
     name: "tags",
   });
 
+  const {
+    fields: hintFields,
+    append: appendHint,
+    remove: removeHint,
+    replace: replaceHints,
+  } = useFieldArray({
+    control,
+    name: "hints",
+  });
+
   const onSubmit = async (formData) => mutate(formData);
   const loadSampleData = () => {
     const sampleData = sampleType === "DP" ? sampledpData : sampleStringProblem;
-
+    replaceHints(sampleData.hints.map((hint) => hint));
     replaceTags(sampleData.tags.map((tag) => tag));
     replacetestcases(sampleData.testcases.map((tc) => tc));
 
@@ -540,18 +551,61 @@ const CreateProblemForm = () => {
                     </label>
                   )}
                 </div>
+
+                {/* Hints Section */}
                 <div className="form-control">
-                  <label className="label">
-                    <span className="label-text font-medium text-base-content">
-                      Hints (Optional)
-                    </span>
-                  </label>
-                  <textarea
-                    className="textarea textarea-bordered min-h-28 w-full p-4 text-base bg-base-50 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 rounded-lg"
-                    {...register("hints")}
-                    placeholder="Enter hints for solving the problem"
-                  />
+                  <div className="flex items-center justify-between mb-4">
+                    <label className="label">
+                      <span className="label-text font-medium text-base-content">
+                        Hints (Optional)
+                      </span>
+                    </label>
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm px-4 py-2 text-sm font-medium hover:bg-primary-focus transition-colors duration-200"
+                      onClick={() => appendHint("")}
+                      aria-label="Add new hint"
+                    >
+                      <Plus className="w-4 h-4 mr-1" /> Add Hint
+                    </button>
+                  </div>
+                  <div className="space-y-4">
+                    {hintFields.map((field, index) => (
+                      <div key={field.id} className="flex gap-3 items-center">
+                        <textarea
+                          className="textarea textarea-bordered min-h-20 w-full p-4 text-base bg-base-50 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 rounded-lg"
+                          {...register(`hints.${index}`)}
+                          placeholder={`Enter hint #${index + 1}`}
+                          aria-invalid={!!errors.hints?.[index]}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-ghost btn-square btn-sm hover:bg-error/10 transition-colors duration-200"
+                          onClick={() => removeHint(index)}
+                          disabled={hintFields.length === 1}
+                          aria-label="Remove hint"
+                        >
+                          <Trash2 className="w-5 h-5 text-error" />
+                        </button>
+                        {errors.hints?.[index] && (
+                          <div className="mt-2">
+                            <span className="text-error text-sm">
+                              {errors.hints[index].message}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {errors.hints && !Array.isArray(errors.hints) && (
+                    <div className="mt-3">
+                      <span className="text-error text-sm">
+                        {errors.hints.message}
+                      </span>
+                    </div>
+                  )}
                 </div>
+
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text font-medium text-base-content">

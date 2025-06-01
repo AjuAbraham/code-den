@@ -29,6 +29,10 @@ export const createProblem = async (formData) => {
   const res = await api.post("/problems/create", formData);
   return res.data;
 };
+export const getOneProblem = async (id) => {
+  const res = await api.get(`/problems/get/${id}`);
+  return res.data;
+};
 
 export const getAllProblems = async () => {
   const res = await api.get("/problems/getall");

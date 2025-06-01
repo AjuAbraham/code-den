@@ -6,8 +6,7 @@ export const sampleStringProblem = {
   tags: ["String", "Two Pointers"],
   constraints:
     "1 <= s.length <= 2 * 10^5\ns consists only of printable ASCII characters.",
-  hints:
-    "Consider using two pointers, one from the start and one from the end, moving towards the center.",
+  hints: ["Use two pointers to compare characters", "Consider edge cases"],
   editorial:
     "We can use two pointers approach to check if the string is a palindrome. One pointer starts from the beginning and the other from the end, moving towards each other.",
   testcases: [
@@ -206,8 +205,7 @@ export const sampledpData = {
   difficulty: "EASY",
   tags: ["Dynamic Programming", "Math", "Memoization"],
   constraints: "1 <= n <= 45",
-  hints:
-    "To reach the nth step, you can either come from the (n-1)th step or the (n-2)th step.",
+  hints: ["Consider using a bottom-up approach", "Think about state transitions"],
   editorial:
     "This is a classic dynamic programming problem. The number of ways to reach the nth step is the sum of the number of ways to reach the (n-1)th step and the (n-2)th step, forming a Fibonacci-like sequence.",
   testcases: [

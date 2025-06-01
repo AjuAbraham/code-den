@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import authStore from "./store/authStore.js";
 import Layout from "./Layout.jsx";
 import AddProblem from "./components/AddProblem.jsx";
+import Problem from "./pages/Problem.jsx";
 function App() {
   const { authUser } = authStore();
   const isAdmin = authUser?.role === "ADMIN";
@@ -32,6 +33,10 @@ function App() {
         <Route
           path="/signup"
           element={!authUser ? <Signup /> : <Navigate to={"/"} />}
+        />
+        <Route
+          path="/problem/:id"
+          element={authUser ? <Problem /> : <Navigate to={"/login"} />}
         />
       </Routes>
     </div>
