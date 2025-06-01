@@ -24,8 +24,20 @@ export const topContributers = async () => {
   const res = await api.get("/auth/top");
   return res.data;
 };
+
 export const createProblem = async (formData) => {
   const res = await api.post("/problems/create", formData);
   return res.data;
 };
+
+export const getAllProblems = async () => {
+  const res = await api.get("/problems/getall");
+  return res.data;
+};
+
+export const createPlaylist = async (formData) => {
+  const res = await api.post("/playlists/create", formData);
+  return res.data;
+};
+
 export default api;

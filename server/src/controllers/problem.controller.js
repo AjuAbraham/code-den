@@ -85,7 +85,12 @@ export const createProblem = asyncHandler(async (req, res) => {
 });
 export const getAllProblem = asyncHandler(async (req, res) => {
   try {
-    const problems = await db.problem.findMany();
+    const problems = await db.problem.findMany({
+      include: {
+        solvedBy: true,
+      },
+    });
+
     if (!problems) {
       throw new ErrorHandler(404, "Unable to fetch problems");
     }
