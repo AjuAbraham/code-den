@@ -6,11 +6,13 @@ import { getOneProblem, logoutUser } from "../lib/axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ProblemSideBar from "../components/ProblemSideBar";
+import CodeEditor from "../components/CodeEditor";
 
 const Problem = () => {
   const navigate = useNavigate();
   const { authUser, setUser } = authStore();
   const [activeTab, setActiveTab] = useState("description");
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { id } = useParams();
   const { mutate } = useMutation({
@@ -68,11 +70,11 @@ const Problem = () => {
 
           {/* Center: Run & Submit */}
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow">
+            <button className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow">
               <Play className="w-4 h-4" />
               Run
             </button>
-            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow">
+            <button className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow">
               Submit
             </button>
           </div>
@@ -131,12 +133,13 @@ const Problem = () => {
           </div>
         </nav>
 
-        <div className="w-full px-4 py-6">
+        <div className="w-full px-4 py-6 flex items-start gap-2">
           <ProblemSideBar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             problem={problem}
           />
+          <CodeEditor problem={problem} />
         </div>
       </div>
     </div>

@@ -140,7 +140,7 @@ const ProblemSideBar = ({ problem, activeTab, setActiveTab }) => {
         return null;
     }
   };
-
+  
   return (
     <div className="w-full max-w-3xl">
       <div className="rounded-2xl bg-slate-900 border border-slate-700 shadow-md overflow-hidden">
@@ -163,7 +163,9 @@ const ProblemSideBar = ({ problem, activeTab, setActiveTab }) => {
         </div>
 
         {/* Content */}
-        <div className="p-6 bg-slate-900">{renderTabContent()}</div>
+        <div className="p-6 bg-slate-900 mb-2 h-[650px] overflow-y-auto">
+          {renderTabContent()}
+        </div>
       </div>
     </div>
   );
