@@ -2,17 +2,26 @@ import { LogOut, Play, User } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import authStore from "../store/authStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getOneProblem, logoutUser } from "../lib/axios";
+import {
+  executeCode,
+  getOneProblem,
+  logoutUser,
+  submitCode,
+} from "../lib/axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ProblemSideBar from "../components/ProblemSideBar";
 import CodeEditor from "../components/CodeEditor";
+import { getLanguageId } from "../lib/contraints.js";
 
 const Problem = () => {
   const navigate = useNavigate();
   const { authUser, setUser } = authStore();
   const [activeTab, setActiveTab] = useState("description");
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [codeActiveTab, setCodeActiveTab] = useState("test_case");
+  const [code, setCode] = useState("");
+  const [resultRes, setResultRes] = useState({});
+  const [selectedLanguage, setSelectedLanguage] = useState("JAVASCRIPT");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { id } = useParams();
   const { mutate } = useMutation({
@@ -23,6 +32,22 @@ const Problem = () => {
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Something went wrong");
+    },
+  });
+
+  const { mutate: createMutate, isPending } = useMutation({
+    mutationFn: ({ type, payload }) => {
+      return type === "run" ? executeCode(payload) : submitCode(payload);
+    },
+    onSuccess: (data) => {
+      if (data?.response) {
+        toast.success(data.message);
+        setResultRes(data.response);
+        setCodeActiveTab("result");
+      }
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
     },
   });
   const { data, isLoading, isError, refetch } = useQuery({
@@ -37,6 +62,7 @@ const Problem = () => {
       </div>
     );
   }
+
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center mt-20 gap-4 text-center">
@@ -53,8 +79,18 @@ const Problem = () => {
       </div>
     );
   }
-  const problem = data?.response || {};
 
+  const problem = data?.response || {};
+  const handleRun = ({ type }) => {
+    const payload = {
+      language_id: getLanguageId(selectedLanguage),
+      problemId: id,
+      source_code: code,
+      stdin: problem.testcases.map((test) => test.input),
+      expected_outputs: problem.testcases.map((test) => test.output),
+    };
+    createMutate({ type, payload });
+  };
   return (
     <div className="w-full min-h-screen flex flex-col gap-10">
       <div>
@@ -70,11 +106,28 @@ const Problem = () => {
 
           {/* Center: Run & Submit */}
           <div className="flex items-center gap-4">
-            <button className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow">
-              <Play className="w-4 h-4" />
-              Run
+            <button
+              onClick={() => handleRun({ type: "run" })}
+              disabled={isPending}
+              className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow"
+            >
+              {isPending ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                <>
+                  <Play className="w-4 h-4" />
+                  Run
+                </>
+              )}
             </button>
-            <button className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow">
+            <button
+              onClick={() => handleRun({ type: "submit" })}
+              disabled={isPending}
+              className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow"
+            >
+              {/* {isPending ? (
+                <span className="loading loading-spinner"></span>
+              ) : null} */}
               Submit
             </button>
           </div>
@@ -139,7 +192,16 @@ const Problem = () => {
             setActiveTab={setActiveTab}
             problem={problem}
           />
-          <CodeEditor problem={problem} />
+          <CodeEditor
+            problem={problem}
+            code={code}
+            resultRes={resultRes}
+            setCode={setCode}
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
+            activeTab={codeActiveTab}
+            setActiveTab={setCodeActiveTab}
+          />
         </div>
       </div>
     </div>

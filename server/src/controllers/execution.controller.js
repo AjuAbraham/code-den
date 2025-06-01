@@ -9,6 +9,9 @@ import {
   submitBatch,
 } from "../utils/judge0.js";
 
+function normalize(str = "") {
+  return str.replace(/\s+/g, "");
+}
 export const executeCode = asyncHandler(async (req, res) => {
   try {
     const { source_code, language_id, stdin, expected_outputs, problemId } =
@@ -44,7 +47,8 @@ export const executeCode = asyncHandler(async (req, res) => {
     // anaysis of result
     let allPassed = true;
     const detailedResult = results.map((result, index) => {
-      const passed = result.stdout?.trim() === expected_outputs[index]?.trim();
+      const passed =
+        normalize(result?.stdout) === normalize(expected_outputs[index]);
       if (!passed) {
         allPassed = false;
       }
@@ -108,7 +112,8 @@ export const compileCode = asyncHandler(async (req, res) => {
     // anaysis of result
     let allPassed = true;
     const detailedResult = results.map((result, index) => {
-      const passed = result.stdout?.trim() === expected_outputs[index]?.trim();
+      const passed =
+        normalize(result?.stdout) === normalize(expected_outputs[index]);
       if (!passed) {
         allPassed = false;
       }

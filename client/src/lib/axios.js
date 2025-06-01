@@ -43,5 +43,14 @@ export const createPlaylist = async (formData) => {
   const res = await api.post("/playlists/create", formData);
   return res.data;
 };
+export const executeCode = async (payload) => {
+
+  const res = await api.post("/execute/", payload);
+  return res.data;
+};
+export const submitCode = async (payload) => {
+  const res = await api.post("/execute/compile", payload);
+  return res.data;
+};
 
 export default api;

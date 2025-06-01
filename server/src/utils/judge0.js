@@ -1,4 +1,4 @@
-import ErrorHandler from "./errorHandler.js";
+
 import axios from "axios";
 export const getJudge0LanguageId = (language) => {
   const languageMap = {
