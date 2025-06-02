@@ -44,12 +44,20 @@ export const createPlaylist = async (formData) => {
   return res.data;
 };
 export const executeCode = async (payload) => {
-
   const res = await api.post("/execute/", payload);
   return res.data;
 };
 export const submitCode = async (payload) => {
   const res = await api.post("/execute/compile", payload);
+  return res.data;
+};
+export const getOneSubmission = async (id) => {
+  const res = await api.get(`/submissions/getone/${id}`);
+  return res.data;
+};
+
+export const submitSolution = async (payload) => {
+  const res = await api.post("/solutions/create", payload);
   return res.data;
 };
 

@@ -1,33 +1,66 @@
-import { FileText, MessageSquare, Lightbulb, Code2 } from "lucide-react";
-
-const tabItems = [
-  {
-    key: "description",
-    icon: <FileText className="w-4 h-4" />,
-    label: "Description",
-  },
-  {
-    key: "submissions",
-    icon: <Code2 className="w-4 h-4" />,
-    label: "Submissions",
-  },
-  {
-    key: "discussion",
-    icon: <MessageSquare className="w-4 h-4" />,
-    label: "Discussion",
-  },
-  { key: "hints", icon: <Lightbulb className="w-4 h-4" />, label: "Hints" },
-];
-
-const ProblemSideBar = ({ problem, activeTab, setActiveTab }) => {
+import {
+  FileText,
+  MessageSquare,
+  Lightbulb,
+  Code2,
+  Pencil,
+  CircleCheckBig,
+} from "lucide-react";
+import SubmissionsList from "./SubmissionsList";
+import AcceptedSubmissionTab from "./AcceptedSubmissionTab";
+import { useNavigate } from "react-router-dom";
+const ProblemSideBar = ({
+  problem,
+  submissions = [],
+  submissionLoading,
+  activeTab,
+  result,
+  setActiveTab,
+}) => {
+  const navigate = useNavigate();
+  const tabItems = [
+    {
+      key: "description",
+      icon: <FileText className="w-4 h-4" />,
+      label: "Description",
+    },
+    {
+      key: "submissions",
+      icon: <Code2 className="w-4 h-4" />,
+      label: "Submissions",
+    },
+    {
+      key: "solutions",
+      icon: <MessageSquare className="w-4 h-4" />,
+      label: "Solutions",
+    },
+    ...(Object.keys(result).length > 0
+      ? [
+          {
+            key: "accepted",
+            icon: <MessageSquare className="w-4 h-4" />,
+            label: "Accepted",
+          },
+        ]
+      : []),
+    { key: "hints", icon: <Lightbulb className="w-4 h-4" />, label: "Hints" },
+  ];
   const renderTabContent = () => {
     switch (activeTab) {
       case "description":
         return (
           <div className="prose max-w-none h-full text-white">
-            <p className="text-2xl tracking-wide w-full font-bold mb-2">
-              {problem.title}
-            </p>
+            <div className="flex items-center justify-between w-full">
+              <p className="text-2xl tracking-wide w-full font-bold mb-2">
+                {problem.title}
+              </p>
+              {submissions.length > 0 ? (
+                <p className="text-green-600 flex items-center gap-2">
+                  <CircleCheckBig />
+                  Solved
+                </p>
+              ) : null}
+            </div>
             <p className="text-base mb-6">{problem.description}</p>
             {problem.examples && (
               <>
@@ -89,21 +122,32 @@ const ProblemSideBar = ({ problem, activeTab, setActiveTab }) => {
           </div>
         );
       case "submissions":
-        return problem.submission ? (
+        return submissions ? (
           <SubmissionsList
-            submissions={problem.submission}
-            isLoading={problem.submission}
+            submissions={submissions}
+            isLoading={submissionLoading}
           />
         ) : (
           <div className="p-4 text-center text-slate-400">
             No submissions yet
           </div>
         );
-      case "discussion":
+      case "solutions":
         return (
-          <div className="p-4 text-center text-slate-400">
-            No discussions yet
-          </div>
+          <>
+            <div className="p-2 w-full text-end">
+              <button
+                onClick={() => navigate(`/solution/create/${problem.id}`)}
+                className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-all border border-slate-600 shadow"
+              >
+                <Pencil className="w-4 h-4" />
+                Create your solution
+              </button>
+            </div>
+            <div className="p-4 text-center text-slate-400">
+              No solutions yet
+            </div>
+          </>
         );
       case "hints":
         return (
@@ -136,11 +180,13 @@ const ProblemSideBar = ({ problem, activeTab, setActiveTab }) => {
             )}
           </div>
         );
+      case "accepted":
+        return <AcceptedSubmissionTab submission={result} />;
       default:
         return null;
     }
   };
-  
+
   return (
     <div className="w-full max-w-3xl">
       <div className="rounded-2xl bg-slate-900 border border-slate-700 shadow-md overflow-hidden">

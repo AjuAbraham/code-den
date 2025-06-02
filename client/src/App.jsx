@@ -7,11 +7,12 @@ import authStore from "./store/authStore.js";
 import Layout from "./Layout.jsx";
 import AddProblem from "./components/AddProblem.jsx";
 import Problem from "./pages/Problem.jsx";
+import CreateSolution from "./pages/CreateSolution.jsx";
 function App() {
   const { authUser } = authStore();
   const isAdmin = authUser?.role === "ADMIN";
   return (
-    <div className="flex flex-col items-center justify-between">
+    <div className="h-screen w-full flex flex-col">
       <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -23,13 +24,15 @@ function App() {
             path="/add-problem"
             element={isAdmin ? <AddProblem /> : <Navigate to={"/"} />}
           />
+          <Route
+            path="/solution/create/:id"
+            element={authUser ? <CreateSolution /> : <Navigate to={"/login"} />}
+          />
         </Route>
-
         <Route
           path="/login"
           element={!authUser ? <Login /> : <Navigate to={"/"} />}
         />
-
         <Route
           path="/signup"
           element={!authUser ? <Signup /> : <Navigate to={"/"} />}

@@ -40,14 +40,22 @@ export const getSubmissionForProblem = asyncHandler(async (req, res) => {
         userId,
         problemId,
       },
+      orderBy: {
+        createdAt: "desc", // Sort by latest createdAt first
+      },
     });
     if (!submissions) {
       throw new ErrorHandler(500, "Unable to fetch associated submissions");
     }
+    const sortedSubmissions = submissions.sort((a, b) => {
+      if (a.status === "Accepted" && b.status !== "Accepted") return -1;
+      if (a.status !== "Accepted" && b.status === "Accepted") return 1; 
+      return 0;
+    });
     res
       .status(200)
       .json(
-        new ApiResponse(200, "Submission fetched successfully", submissions)
+        new ApiResponse(200, "Submission fetched successfully", sortedSubmissions)
       );
   } catch (error) {
     res
@@ -82,8 +90,8 @@ export const getAllSubmissionsCountForProblem = asyncHandler(
         );
     } catch (error) {
       res
-      .status(error.statusCode || 500)
-      .json({ message: error.message, success: error.success || false });
+        .status(error.statusCode || 500)
+        .json({ message: error.message, success: error.success || false });
     }
   }
 );

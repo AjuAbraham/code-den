@@ -21,7 +21,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     next();
   } catch (error) {
     return res
-      .status(error.statusCode)
+      .status(error.statusCode || 401)
       .json({ message: error.message, success: false });
   }
 });

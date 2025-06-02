@@ -170,7 +170,7 @@ const CodeEditor = ({
                     <button
                       key={idx}
                       onClick={() => setActiveTestCase(idx)}
-                      className={`px-4 py-2 text-sm font-medium cursor-pointer ${
+                      className={`px-4 py-2  text-sm font-medium cursor-pointer ${
                         activeTestCase === idx
                           ? "text-orange-400 border-b-2 border-orange-400"
                           : "text-slate-300 hover:text-orange-300"

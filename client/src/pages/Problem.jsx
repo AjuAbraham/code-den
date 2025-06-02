@@ -5,10 +5,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   executeCode,
   getOneProblem,
+  getOneSubmission,
   logoutUser,
   submitCode,
 } from "../lib/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import ProblemSideBar from "../components/ProblemSideBar";
 import CodeEditor from "../components/CodeEditor";
@@ -20,6 +21,7 @@ const Problem = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [codeActiveTab, setCodeActiveTab] = useState("test_case");
   const [code, setCode] = useState("");
+  const [buttonType, setButtonType] = useState(null);
   const [resultRes, setResultRes] = useState({});
   const [selectedLanguage, setSelectedLanguage] = useState("JAVASCRIPT");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -36,14 +38,18 @@ const Problem = () => {
   });
 
   const { mutate: createMutate, isPending } = useMutation({
-    mutationFn: ({ type, payload }) => {
-      return type === "run" ? executeCode(payload) : submitCode(payload);
+    mutationFn: ({ payload }) => {
+      return buttonType === "run" ? executeCode(payload) : submitCode(payload);
     },
     onSuccess: (data) => {
       if (data?.response) {
         toast.success(data.message);
         setResultRes(data.response);
-        setCodeActiveTab("result");
+        if (buttonType === "run") {
+          setCodeActiveTab("result");
+        }
+        setButtonType(null);
+        setActiveTab("accepted");
       }
     },
     onError: (error) => {
@@ -55,15 +61,33 @@ const Problem = () => {
     queryFn: () => getOneProblem(id),
     staleTime: 1000 * 60 * 5,
   });
-  if (isLoading) {
+  const {
+    data: submissionData,
+    isLoading: submissionLoading,
+    isError: submissionError,
+  } = useQuery({
+    queryKey: ["submissionData", id],
+    queryFn: () => getOneSubmission(id),
+    staleTime: 1000 * 60 * 5,
+  });
+  useEffect(() => {
+    if (
+      submissionData?.response &&
+      submissionData?.response[0]?.status === "Accepted"
+    ) {
+      const recentSubmission = submissionData.response[0];
+      setCode(recentSubmission?.sourceCode);
+      setSelectedLanguage(recentSubmission?.language?.toUpperCase());
+    }
+  }, [submissionData?.response, code, selectedLanguage]);
+  if (isLoading || submissionLoading) {
     return (
       <div className="flex h-fit  justify-center mt-20">
         <span className="loading  text-xl">Loading...</span>
       </div>
     );
   }
-
-  if (isError) {
+  if (isError || submissionError) {
     return (
       <div className="flex flex-col items-center justify-center mt-20 gap-4 text-center">
         <p className="text-red-400 text-xl font-semibold">
@@ -79,9 +103,8 @@ const Problem = () => {
       </div>
     );
   }
-
   const problem = data?.response || {};
-  const handleRun = ({ type }) => {
+  const handleRun = () => {
     const payload = {
       language_id: getLanguageId(selectedLanguage),
       problemId: id,
@@ -89,7 +112,7 @@ const Problem = () => {
       stdin: problem.testcases.map((test) => test.input),
       expected_outputs: problem.testcases.map((test) => test.output),
     };
-    createMutate({ type, payload });
+    createMutate({ payload });
   };
   return (
     <div className="w-full min-h-screen flex flex-col gap-10">
@@ -107,12 +130,18 @@ const Problem = () => {
           {/* Center: Run & Submit */}
           <div className="flex items-center gap-4">
             <button
-              onClick={() => handleRun({ type: "run" })}
+              onClick={() => {
+                setButtonType("run");
+                handleRun();
+              }}
               disabled={isPending}
-              className="flex items-center cursor-pointer gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow"
+              className="flex items-center disabled:bg-gray-400 disabled:pointer-events-none cursor-pointer gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow"
             >
-              {isPending ? (
-                <span className="loading loading-spinner"></span>
+              {isPending && buttonType === "run" ? (
+                <>
+                  <span className="loading loading-spinner"></span>
+                  <span className="">Running</span>
+                </>
               ) : (
                 <>
                   <Play className="w-4 h-4" />
@@ -120,16 +149,21 @@ const Problem = () => {
                 </>
               )}
             </button>
-            <button
-              onClick={() => handleRun({ type: "submit" })}
-              disabled={isPending}
-              className="px-4 py-2 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow"
-            >
-              {/* {isPending ? (
-                <span className="loading loading-spinner"></span>
-              ) : null} */}
-              Submit
-            </button>
+            {buttonType === "run" && isPending ? null : (
+              <button
+                onClick={() => {
+                  setButtonType("submit");
+                  handleRun();
+                }}
+                disabled={isPending}
+                className="px-4 py-2 flex items-center gap-2 cursor-pointer disabled:bg-gray-400 disabled:pointer-events-none bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow"
+              >
+                {isPending && buttonType === "submit" ? (
+                  <span className="loading loading-spinner"></span>
+                ) : null}
+                Submit
+              </button>
+            )}
           </div>
 
           {/* Right: Streak + Avatar + Dropdown */}
@@ -191,6 +225,9 @@ const Problem = () => {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             problem={problem}
+            submissionLoading={submissionLoading}
+            result={resultRes}
+            submissions={submissionData?.response}
           />
           <CodeEditor
             problem={problem}

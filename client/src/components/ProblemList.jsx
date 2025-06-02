@@ -5,18 +5,17 @@ import CreatePlaylistModal from "./CreatePlayListModel";
 import { useMutation } from "@tanstack/react-query";
 import { createPlaylist } from "../lib/axios";
 import { toast } from "react-hot-toast";
+import stateStore from "../store/stateStore";
 
 const ProblemList = ({ problemList = [] }) => {
   const [search, setSearch] = useState("");
-  // Single state for live filters
+  const { setTags, setCompanies } = stateStore();
   const [liveFilters, setLiveFilters] = useState({
     tags: [],
     companies: [],
     difficulty: "",
     status: "",
   });
-
-  // Single state for applied filters
   const [appliedFilters, setAppliedFilters] = useState({
     tags: [],
     companies: [],
@@ -43,6 +42,8 @@ const ProblemList = ({ problemList = [] }) => {
       problem.tags.map((tag) => tagsSet.add(tag));
       problem.companies.map((company) => companiesSet.add(company));
     });
+    setTags(Array.from(tagsSet));
+    setCompanies(Array.from(companiesSet));
     return [Array.from(tagsSet), Array.from(companiesSet)];
   }, [problemList]);
 
