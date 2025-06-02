@@ -114,15 +114,23 @@ export const getAllSolutions = asyncHandler(async (req, res) => {
       where: {
         problemId,
       },
+      include: {
+        solutionDiscussion: true,
+        likes: true,
+      },
     });
     if (!getAllSolutions) {
       throw new ErrorHandler(404, "Unable to get all solutions");
     }
-
+    const updatedSolutions = getAllSolutions.map((solution) => ({
+      ...solution,
+      likes: solution.likes.length,
+      solutionDiscussion: solution.solutionDiscussion.length,
+    }));
     res
       .status(200)
       .json(
-        new ApiResponse(200, "Solutions fetched successfully", getAllSolutions)
+        new ApiResponse(200, "Solutions fetched successfully", updatedSolutions)
       );
   } catch (error) {
     res

@@ -4,6 +4,7 @@ import authStore from "../store/authStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   executeCode,
+  getAllSolutionToProblem,
   getOneProblem,
   getOneSubmission,
   logoutUser,
@@ -70,6 +71,15 @@ const Problem = () => {
     queryFn: () => getOneSubmission(id),
     staleTime: 1000 * 60 * 5,
   });
+  const {
+    data: solutionData,
+    isLoading: solutionLoading,
+    isError: solutionError,
+  } = useQuery({
+    queryKey: ["solutionData", id],
+    queryFn: () => getAllSolutionToProblem(id),
+    staleTime: 1000 * 60 * 5,
+  });
   useEffect(() => {
     if (
       submissionData?.response &&
@@ -80,14 +90,14 @@ const Problem = () => {
       setSelectedLanguage(recentSubmission?.language?.toUpperCase());
     }
   }, [submissionData?.response, code, selectedLanguage]);
-  if (isLoading || submissionLoading) {
+  if (isLoading || submissionLoading || solutionLoading) {
     return (
       <div className="flex h-fit  justify-center mt-20">
         <span className="loading  text-xl">Loading...</span>
       </div>
     );
   }
-  if (isError || submissionError) {
+  if (isError || submissionError || solutionError) {
     return (
       <div className="flex flex-col items-center justify-center mt-20 gap-4 text-center">
         <p className="text-red-400 text-xl font-semibold">
@@ -98,7 +108,7 @@ const Problem = () => {
           onClick={() => refetch()}
           className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow"
         >
-          Retry Init Data
+          Retry
         </button>
       </div>
     );
@@ -225,6 +235,8 @@ const Problem = () => {
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             problem={problem}
+            code={code}
+            solutions={solutionData?.response}
             submissionLoading={submissionLoading}
             result={resultRes}
             submissions={submissionData?.response}

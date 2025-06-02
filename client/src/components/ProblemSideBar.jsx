@@ -9,13 +9,16 @@ import {
 import SubmissionsList from "./SubmissionsList";
 import AcceptedSubmissionTab from "./AcceptedSubmissionTab";
 import { useNavigate } from "react-router-dom";
+import SolutionList from "./SolutionList";
 const ProblemSideBar = ({
   problem,
   submissions = [],
   submissionLoading,
   activeTab,
   result,
+  code,
   setActiveTab,
+  solutions,
 }) => {
   const navigate = useNavigate();
   const tabItems = [
@@ -137,16 +140,27 @@ const ProblemSideBar = ({
           <>
             <div className="p-2 w-full text-end">
               <button
-                onClick={() => navigate(`/solution/create/${problem.id}`)}
-                className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-all border border-slate-600 shadow"
+                onClick={() =>
+                  navigate(`/solution/create/${problem.id}`, {
+                    state: { code },
+                  })
+                }
+                disabled={
+                  !submissions.length > 0 && submissions[0]?.status !== "Accepted"
+                }
+                className="inline-flex items-center gap-2 text-sm disabled:pointer-events-none font-medium px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-all border border-slate-600 shadow"
               >
                 <Pencil className="w-4 h-4" />
                 Create your solution
               </button>
             </div>
-            <div className="p-4 text-center text-slate-400">
-              No solutions yet
-            </div>
+            {solutions.length > 0 ? (
+              <SolutionList solutions={solutions} />
+            ) : (
+              <div className="p-4 text-center text-slate-400">
+                No solutions yet
+              </div>
+            )}
           </>
         );
       case "hints":

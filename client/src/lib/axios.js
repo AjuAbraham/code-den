@@ -61,4 +61,8 @@ export const submitSolution = async (payload) => {
   return res.data;
 };
 
+export const getAllSolutionToProblem = async (id) => {
+  const res = await api.get(`/solutions/getall/${id}`);
+  return res.data;
+};
 export default api;

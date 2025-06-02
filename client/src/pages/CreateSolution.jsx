@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import MarkdownEditor from "@uiw/react-markdown-editor";
 import { useState } from "react";
 import { CircleX, Send } from "lucide-react";
@@ -9,6 +9,9 @@ import { submitSolution } from "../lib/axios";
 const CreateSolution = () => {
   const { id } = useParams();
   const { tags } = stateStore();
+  const [addTags, setAddedTags] = useState([]);
+  const { state } = useLocation();
+  const code = state.code;
   const skeleton = `# Intuition
 <!-- Describe your first thoughts on how to solve this problem. -->
 
@@ -24,26 +27,9 @@ const CreateSolution = () => {
 
 # Code
 \`\`\`cpp []
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        vector<int> ans;
-        int n = nums.size();
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (nums[i] + nums[j] == target) {
-                    ans.push_back(i);
-                    ans.push_back(j);
-                    break;
-                }
-            }
-        }
-        return ans;
-    }
-};
+${code || ""}
 \`\`\`
 `;
-  const [addTags, setAddedTags] = useState([]);
   const navigate = useNavigate();
   const [markdownVal, setMarkdownVal] = useState(skeleton);
   const [title, setTitle] = useState("");
