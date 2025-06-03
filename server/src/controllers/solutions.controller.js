@@ -115,7 +115,11 @@ export const getAllSolutions = asyncHandler(async (req, res) => {
         problemId,
       },
       include: {
-        solutionDiscussion: true,
+        solutionDiscussion: {
+          where: {
+            parentId: null,
+          },
+        },
         likes: true,
       },
     });
@@ -142,6 +146,7 @@ export const getAllSolutions = asyncHandler(async (req, res) => {
 export const getSingleSolution = asyncHandler(async (req, res) => {
   try {
     const { solutionId } = req.params;
+    const id = req.user.id;
     if (!solutionId) {
       throw new ErrorHandler(400, "Solution id is required");
     }
@@ -150,10 +155,12 @@ export const getSingleSolution = asyncHandler(async (req, res) => {
         id: solutionId,
       },
       include: {
+        likes: true,
         solutionDiscussion: {
           where: {
             parentId: null,
           },
+          include: { user: true },
           orderBy: {
             createdAt: "desc",
           },
@@ -163,11 +170,13 @@ export const getSingleSolution = asyncHandler(async (req, res) => {
     if (!singleSolution) {
       throw new ErrorHandler(404, "Unable to find solution");
     }
-    res
-      .status(200)
-      .json(
-        new ApiResponse(200, "Solution fetched successfully", singleSolution)
-      );
+    const isLiked = singleSolution.likes.some((like) => like.userId === id);
+    res.status(200).json(
+      new ApiResponse(200, "Solution fetched successfully", {
+        ...singleSolution,
+        isLiked,
+      })
+    );
   } catch (error) {
     res
       .status(error.statusCode || 500)
@@ -212,26 +221,53 @@ export const likeSolution = asyncHandler(async (req, res) => {
   try {
     const userId = req.user.id;
     const { solutionId } = req.params;
+
     if (!solutionId) {
       throw new ErrorHandler(400, "Solution id is required");
     }
-    const exsistingSolution = await db.solutions.findUnique({
+
+    const existingSolution = await db.solutions.findUnique({
       where: {
         id: solutionId,
       },
     });
-    if (!exsistingSolution) {
+
+    if (!existingSolution) {
       throw new ErrorHandler(404, "Unable to find the solution");
     }
-    const likeSolution = await db.solutionLike.create({
-      data: {
-        userId,
-        solutionId,
+
+    const likedSolution = await db.solutionLike.findUnique({
+      where: {
+        userId_solutionId: {
+          userId,
+          solutionId,
+        },
       },
     });
+
+    let likeSolution;
+    if (likedSolution) {
+      likeSolution = await db.solutionLike.delete({
+        where: {
+          userId_solutionId: {
+            userId,
+            solutionId,
+          },
+        },
+      });
+    } else {
+      likeSolution = await db.solutionLike.create({
+        data: {
+          userId,
+          solutionId,
+        },
+      });
+    }
+
     if (!likeSolution) {
       throw new ErrorHandler(500, "Unable to like the solution");
     }
+
     res
       .status(200)
       .json(new ApiResponse(200, "Solution liked successfully", likeSolution));

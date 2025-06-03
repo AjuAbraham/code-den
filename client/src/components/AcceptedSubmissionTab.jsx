@@ -1,16 +1,13 @@
-import React from 'react';
 import {
   CheckCircle2,
   XCircle,
   Clock,
   MemoryStick as Memory,
-  FileCode2,
-  Calendar,
-} from 'lucide-react';
+} from "lucide-react";
 
 const SubmissionResults = ({ submission }) => {
-  const memoryArr = JSON.parse(submission.memory || '[]');
-  const timeArr = JSON.parse(submission.time || '[]');
+  const memoryArr = JSON.parse(submission.memory || "[]");
+  const timeArr = JSON.parse(submission.time || "[]");
 
   const avgMemory =
     memoryArr.reduce((a, b) => a + parseFloat(b), 0) / memoryArr.length || 0;
@@ -30,9 +27,9 @@ const SubmissionResults = ({ submission }) => {
           <div className="text-sm text-slate-400">Status</div>
           <div
             className={`text-xl font-semibold ${
-              submission.status === 'Accepted'
-                ? 'text-green-400'
-                : 'text-red-400'
+              submission.status === "Accepted"
+                ? "text-green-400"
+                : "text-red-400"
             }`}
           >
             {submission.status}
@@ -87,7 +84,7 @@ const SubmissionResults = ({ submission }) => {
                   <td>
                     <div
                       className={`flex items-center gap-2 font-medium ${
-                        testCase.passed ? 'text-green-400' : 'text-red-400'
+                        testCase.passed ? "text-green-400" : "text-red-400"
                       }`}
                     >
                       {testCase.passed ? (
@@ -95,12 +92,14 @@ const SubmissionResults = ({ submission }) => {
                       ) : (
                         <XCircle className="w-5 h-5" />
                       )}
-                      {testCase.passed ? 'Passed' : 'Failed'}
+                      {testCase.passed ? "Passed" : "Failed"}
                     </div>
                   </td>
-                  <td className="font-mono text-slate-300">{testCase.expected}</td>
                   <td className="font-mono text-slate-300">
-                    {testCase.stdout || 'null'}
+                    {testCase.expected}
+                  </td>
+                  <td className="font-mono text-slate-300">
+                    {testCase.stdout || "null"}
                   </td>
                   <td>{testCase.memory}</td>
                   <td>{testCase.time}</td>

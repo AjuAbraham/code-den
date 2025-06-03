@@ -13,7 +13,7 @@ const solutionRouter = Router();
 
 solutionRouter.post("/create", authMiddleware, createSolution);
 solutionRouter.post("/create-comment", authMiddleware, createSolutionComment);
-solutionRouter.get("/getone/:solutionId", getSingleSolution);
+solutionRouter.get("/getone/:solutionId", authMiddleware, getSingleSolution);
 solutionRouter.get("/getall/:problemId", getAllSolutions);
 solutionRouter.get("/get-replies/:discussionId", getDiscussionReplies);
 solutionRouter.post("/like/:solutionId", authMiddleware, likeSolution);

@@ -10,6 +10,10 @@ import SubmissionsList from "./SubmissionsList";
 import AcceptedSubmissionTab from "./AcceptedSubmissionTab";
 import { useNavigate } from "react-router-dom";
 import SolutionList from "./SolutionList";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { getoneSolution } from "../lib/axios";
+import SolutionPreview from "./SolutionPreview";
 const ProblemSideBar = ({
   problem,
   submissions = [],
@@ -21,6 +25,37 @@ const ProblemSideBar = ({
   solutions,
 }) => {
   const navigate = useNavigate();
+  const [solutionId, setSolutionId] = useState(null);
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["getoneSolution", solutionId],
+    queryFn: () => getoneSolution(solutionId),
+    staleTime: 1000 * 60 * 5,
+    enabled: solutionId ? true : false,
+  });
+  if (isLoading) {
+    return (
+      <div className="flex h-fit  justify-center mt-20">
+        <span className="loading  text-xl">Loading...</span>
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-20 gap-4 text-center">
+        <p className="text-red-400 text-xl font-semibold">
+          🚨 Oops! Something went wrong while loading data.
+        </p>
+
+        <button
+          onClick={() => refetch()}
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+  const selectedSolution = data?.response || {};
   const tabItems = [
     {
       key: "description",
@@ -138,31 +173,49 @@ const ProblemSideBar = ({
       case "solutions":
         return (
           <>
-            <div className="p-2 w-full text-end">
-              <button
-                onClick={() =>
-                  navigate(`/solution/create/${problem.id}`, {
-                    state: { code },
-                  })
-                }
-                disabled={
-                  !submissions.length > 0 && submissions[0]?.status !== "Accepted"
-                }
-                className="inline-flex items-center gap-2 text-sm disabled:pointer-events-none font-medium px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-all border border-slate-600 shadow"
-              >
-                <Pencil className="w-4 h-4" />
-                Create your solution
-              </button>
-            </div>
-            {solutions.length > 0 ? (
-              <SolutionList solutions={solutions} />
+            {Object.keys(selectedSolution).length > 0 ? (
+              <SolutionPreview
+                solution={selectedSolution}
+                setSolutionId={setSolutionId}
+                refetch={refetch}
+              />
             ) : (
-              <div className="p-4 text-center text-slate-400">
-                No solutions yet
-              </div>
+              <>
+                <div className="p-2 w-full text-end">
+                  <button
+                    onClick={() =>
+                      navigate(`/solution/create/${problem.id}`, {
+                        state: { code },
+                      })
+                    }
+                    disabled={
+                      !(
+                        submissions.length > 0 &&
+                        submissions[0]?.status === "Accepted"
+                      )
+                    }
+                    className="inline-flex items-center gap-2 text-sm disabled:pointer-events-none font-medium px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-all border border-slate-600 shadow"
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Create your solution
+                  </button>
+                </div>
+
+                {solutions.length > 0 ? (
+                  <SolutionList
+                    solutions={solutions}
+                    setSolutionId={setSolutionId}
+                  />
+                ) : (
+                  <div className="p-4 text-center text-slate-400">
+                    No solutions yet
+                  </div>
+                )}
+              </>
             )}
           </>
         );
+
       case "hints":
         return (
           <div className="flex flex-col gap-4 p-6 text-white">

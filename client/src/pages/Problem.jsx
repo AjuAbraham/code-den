@@ -1,4 +1,4 @@
-import { LogOut, Play, User } from "lucide-react";
+import { ChevronLeft, LogOut, Play, User } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import authStore from "../store/authStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -80,6 +80,7 @@ const Problem = () => {
     queryFn: () => getAllSolutionToProblem(id),
     staleTime: 1000 * 60 * 5,
   });
+
   useEffect(() => {
     if (
       submissionData?.response &&
@@ -89,7 +90,7 @@ const Problem = () => {
       setCode(recentSubmission?.sourceCode);
       setSelectedLanguage(recentSubmission?.language?.toUpperCase());
     }
-  }, [submissionData?.response, code, selectedLanguage]);
+  }, [submissionData?.response[0].status]);
   if (isLoading || submissionLoading || solutionLoading) {
     return (
       <div className="flex h-fit  justify-center mt-20">
@@ -131,8 +132,9 @@ const Problem = () => {
           <div className="flex items-center gap-6">
             <Link
               to="/"
-              className="text-white font-semibold text-lg hover:text-orange-400 transition"
+              className="text-white flex items-center gap-1 font-semibold text-lg hover:text-orange-400 transition"
             >
+              <ChevronLeft className="w-6 h-6" />
               Problems
             </Link>
           </div>

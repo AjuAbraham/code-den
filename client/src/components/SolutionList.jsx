@@ -6,14 +6,14 @@ const formatLikes = (count) => {
   return count.toString();
 };
 
-const SolutionList = ({ solutions }) => {
+const SolutionList = ({ solutions, setSolutionId }) => {
   return (
     <div className="p-1 grid gap-4">
       {solutions.map((sol) => (
         <div
           key={sol.id}
           className="bg-slate-800 border border-slate-700 rounded-xl p-4 hover:border-primary cursor-pointer transition"
-          onClick={() => window.location.href = `/solutions/${sol.id}`}
+          onClick={() => setSolutionId(sol.id)}
         >
           <div className="flex justify-between items-start mb-2">
             <h2 className="text-lg font-semibold text-white">{sol.title}</h2>
@@ -24,12 +24,17 @@ const SolutionList = ({ solutions }) => {
 
           <div className="flex flex-wrap gap-2 text-xs mb-3">
             {sol.tags.slice(0, 5).map((tag, i) => (
-              <span key={i} className="bg-slate-700 text-slate-300 px-2 py-1 rounded-full">
+              <span
+                key={i}
+                className="bg-slate-700 text-slate-300 px-2 py-1 rounded-full"
+              >
                 {tag}
               </span>
             ))}
             {sol.tags.length > 5 && (
-              <span className="text-slate-400">+{sol.tags.length - 5} more</span>
+              <span className="text-slate-400">
+                +{sol.tags.length - 5} more
+              </span>
             )}
           </div>
 

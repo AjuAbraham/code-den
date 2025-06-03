@@ -65,4 +65,16 @@ export const getAllSolutionToProblem = async (id) => {
   const res = await api.get(`/solutions/getall/${id}`);
   return res.data;
 };
+export const getoneSolution = async (id) => {
+  const res = await api.get(`/solutions/getone/${id}`);
+  return res.data;
+};
+export const likeSolution = async (id) => {
+  const res = await api.post(`/solutions/like/${id}`);
+  return res.data;
+};
+export const createComment = async (solutionId) => {
+  const res = await api.post(`/solutions/create-comment`, solutionId);
+  return res.data;
+};
 export default api;
