@@ -4,6 +4,7 @@ export const sampleStringProblem = {
     "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers. Given a string s, return true if it is a palindrome, or false otherwise.",
   difficulty: "EASY",
   tags: ["String", "Two Pointers"],
+  companies: ["amazon", "flipkart"],
   constraints:
     "1 <= s.length <= 2 * 10^5\ns consists only of printable ASCII characters.",
   hints: ["Use two pointers to compare characters", "Consider edge cases"],
@@ -204,8 +205,12 @@ export const sampledpData = {
     "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
   difficulty: "EASY",
   tags: ["Dynamic Programming", "Math", "Memoization"],
+  companies: ["google", "meta"],
   constraints: "1 <= n <= 45",
-  hints: ["Consider using a bottom-up approach", "Think about state transitions"],
+  hints: [
+    "Consider using a bottom-up approach",
+    "Think about state transitions",
+  ],
   editorial:
     "This is a classic dynamic programming problem. The number of ways to reach the nth step is the sum of the number of ways to reach the (n-1)th step and the (n-2)th step, forming a Fibonacci-like sequence.",
   testcases: [

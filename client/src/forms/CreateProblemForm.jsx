@@ -16,17 +16,19 @@ import { useNavigate } from "react-router-dom";
 import problemSchema from "../schema/problemSchema";
 import { toast } from "react-hot-toast";
 import { sampledpData, sampleStringProblem } from "../lib/sampleData";
-import { useMutation } from "@tanstack/react-query";
-import { createProblem } from "../lib/axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProblem } from "../lib/axios.js";
 const CreateProblemForm = () => {
   const [sampleType, setSampleType] = useState("DP");
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
     mutationKey: ["problem-create"],
     mutationFn: (formData) => createProblem(formData),
     onSuccess: (data) => {
       if (data.success) {
-        toast.error("Problem Created Successfully");
+        toast.success("Problem Created Successfully");
+        queryClient.invalidateQueries({ queryKey: ["getAllProblem"] });
         navigate("/", { replace: true });
       }
     },
@@ -45,6 +47,7 @@ const CreateProblemForm = () => {
     defaultValues: {
       testcases: [{ input: "", output: "" }],
       tags: [""],
+      companies: [""],
       hints: [""],
       examples: {
         JAVASCRIPT: { input: "", output: "", explanation: "" },
@@ -92,12 +95,21 @@ const CreateProblemForm = () => {
     control,
     name: "hints",
   });
-
+  const {
+    fields: companisFields,
+    append: appendCompany,
+    remove: removeCompany,
+    replace: replaceCompany,
+  } = useFieldArray({
+    control,
+    name: "companies",
+  });
   const onSubmit = async (formData) => mutate(formData);
   const loadSampleData = () => {
     const sampleData = sampleType === "DP" ? sampledpData : sampleStringProblem;
     replaceHints(sampleData.hints.map((hint) => hint));
     replaceTags(sampleData.tags.map((tag) => tag));
+    replaceCompany(sampleData.companies.map((company) => company));
     replacetestcases(sampleData.testcases.map((tc) => tc));
 
     reset(sampleData);
@@ -264,6 +276,53 @@ const CreateProblemForm = () => {
                 <div className="mt-3">
                   <span className="text-error text-sm">
                     {errors.tags.message}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Companies */}
+            <div className="card bg-base-200/50 shadow-md rounded-xl p-6 lg:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl lg:text-2xl font-semibold text-base-content flex items-center gap-3">
+                  <BookOpen className="w-6 h-6 text-primary" />
+                  Companies
+                </h3>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm px-4 py-2 text-sm font-medium hover:bg-primary-focus transition-colors duration-200"
+                  onClick={() => appendCompany("")}
+                  aria-label="Add new tag"
+                >
+                  <Plus className="w-4 h-4 mr-1" /> Add Company
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {companisFields.map((field, index) => (
+                  <div key={field.id} className="flex gap-3 items-center">
+                    <input
+                      type="text"
+                      className="input input-bordered flex-1 text-base bg-base-50 border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 rounded-lg"
+                      {...register(`companies.${index}`)}
+                      placeholder="Enter company"
+                      aria-invalid={!!errors.companies?.[index]}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-square btn-sm hover:bg-error/10 transition-colors duration-200"
+                      onClick={() => removeCompany(index)}
+                      disabled={companisFields.length === 1}
+                      aria-label="Remove tag"
+                    >
+                      <Trash2 className="w-5 h-5 text-error" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {errors.companies && (
+                <div className="mt-3">
+                  <span className="text-error text-sm">
+                    {errors.companies.message}
                   </span>
                 </div>
               )}

@@ -24,6 +24,7 @@ const ProblemSideBar = ({
   setActiveTab,
   solutions,
 }) => {
+  console.log("rsutl", result);
   const navigate = useNavigate();
   const [solutionId, setSolutionId] = useState(null);
   const { data, isLoading, isError, refetch } = useQuery({

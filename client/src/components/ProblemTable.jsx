@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Bookmark, PencilIcon, TrashIcon } from "lucide-react";
 import authStore from "../store/authStore.js";
 import { useState } from "react";
@@ -8,14 +8,14 @@ const ProblemTable = ({ problemList = [] }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(problemList.length / itemsPerPage);
-
+  const { pathname } = useLocation();
   const paginatedProblems = problemList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
+  const isSheetPage = pathname.includes("/sheets");
   return (
-    <div className="w-full max-w-6xl mx-auto mt-6">
+    <div className="w-full  mt-6">
       <div className="overflow-x-auto rounded-xl shadow-lg bg-base-100">
         <table className="table table-lg text-base-content">
           <thead className="bg-base-300 text-base font-semibold">
@@ -99,17 +99,21 @@ const ProblemTable = ({ problemList = [] }) => {
                             <button className="btn btn-sm btn-error btn-circle">
                               <TrashIcon className="w-4 h-4 text-white" />
                             </button>
-                            <button
-                              className="btn btn-sm btn-warning btn-circle"
-                              disabled
-                            >
-                              <PencilIcon className="w-4 h-4 text-white" />
-                            </button>
+                            {!isSheetPage ? (
+                              <button
+                                className="btn btn-sm btn-warning btn-circle"
+                                disabled
+                              >
+                                <PencilIcon className="w-4 h-4 text-white" />
+                              </button>
+                            ) : null}
                           </>
                         )}
-                        <button className="btn btn-sm btn-outline btn-circle">
-                          <Bookmark className="w-4 h-4" />
-                        </button>
+                        {!isSheetPage ? (
+                          <button className="btn btn-sm btn-outline btn-circle">
+                            <Bookmark className="w-4 h-4" />
+                          </button>
+                        ) : null}
                       </div>
                     </td>
                   </tr>

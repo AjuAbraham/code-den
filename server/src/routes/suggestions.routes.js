@@ -4,6 +4,6 @@ import { userSuggestion } from "../controllers/suggestion.controller.js";
 
 const suggestionRouter = Router();
 
-suggestionRouter.get("/get", authMiddleware, userSuggestion);
+suggestionRouter.post("/", authMiddleware, userSuggestion);
 
 export default suggestionRouter;

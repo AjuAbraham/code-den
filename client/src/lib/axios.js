@@ -1,13 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL:
-    import.meta.env.MODE === "development"
-      ? "http://localhost:8000/api/v1"
-      : "/api/v1",
+  baseURL: "http://localhost:8000/api/v1",
   withCredentials: true,
 });
-
 export const signUpUser = async (formData) => {
   const res = await api.post("/auth/register", formData);
   return res.data;
@@ -75,6 +71,18 @@ export const likeSolution = async (id) => {
 };
 export const createComment = async (solutionId) => {
   const res = await api.post(`/solutions/create-comment`, solutionId);
+  return res.data;
+};
+export const getAllSheets = async () => {
+  const res = await api.get(`/playlists/getall`);
+  return res.data;
+};
+export const generatePlaylist = async (formData) => {
+  const res = await api.post(`/suggestion/`, formData);
+  return res.data;
+};
+export const getOnePlaylist = async (playlistId) => {
+  const res = await api.get(`playlists/get/${playlistId}`);
   return res.data;
 };
 export default api;

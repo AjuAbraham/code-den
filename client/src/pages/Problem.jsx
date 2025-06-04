@@ -47,10 +47,12 @@ const Problem = () => {
         toast.success(data.message);
         setResultRes(data.response);
         if (buttonType === "run") {
+          setButtonType(null);
           setCodeActiveTab("result");
+          return;
+        } else {
+          setActiveTab("accepted");
         }
-        setButtonType(null);
-        setActiveTab("accepted");
       }
     },
     onError: (error) => {
@@ -90,7 +92,7 @@ const Problem = () => {
       setCode(recentSubmission?.sourceCode);
       setSelectedLanguage(recentSubmission?.language?.toUpperCase());
     }
-  }, [submissionData?.response[0].status]);
+  }, [submissionData?.response[0]?.status]);
   if (isLoading || submissionLoading || solutionLoading) {
     return (
       <div className="flex h-fit  justify-center mt-20">

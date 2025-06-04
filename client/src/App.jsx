@@ -8,6 +8,8 @@ import Layout from "./Layout.jsx";
 import AddProblem from "./components/AddProblem.jsx";
 import Problem from "./pages/Problem.jsx";
 import CreateSolution from "./pages/CreateSolution.jsx";
+import Sheets from "./pages/Sheets.jsx";
+import SheetPage from "./components/SheetPage.jsx";
 function App() {
   const { authUser } = authStore();
   const isAdmin = authUser?.role === "ADMIN";
@@ -27,6 +29,14 @@ function App() {
           <Route
             path="/solution/create/:id"
             element={authUser ? <CreateSolution /> : <Navigate to={"/login"} />}
+          />
+          <Route
+            path="/sheets"
+            element={authUser ? <Sheets /> : <Navigate to={"/login"} />}
+          />
+          <Route
+            path="/sheets/:playlistId"
+            element={authUser ? <SheetPage /> : <Navigate to={"/login"} />}
           />
         </Route>
         <Route

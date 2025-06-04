@@ -2,6 +2,7 @@ import { db } from "../db/index.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import ApiResponse from "../utils/apiResponse.js";
+import { getAllProblems } from "../../../client/src/lib/axios.js";
 
 export const createPlaylist = asyncHandler(async (req, res) => {
   try {
@@ -42,7 +43,7 @@ export const createPlaylist = asyncHandler(async (req, res) => {
 export const getAllPlaylists = asyncHandler(async (req, res) => {
   try {
     const userId = req.user.id;
-    const allPaylists = await db.playlist.findMany({
+    const allPlaylists = await db.playlist.findMany({
       where: {
         userId,
       },
@@ -53,13 +54,42 @@ export const getAllPlaylists = asyncHandler(async (req, res) => {
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
-    if (!allPaylists) {
+
+    if (!allPlaylists) {
       throw new ErrorHandler(404, "Unable to fetch playlist");
     }
+    const playlistsWithCounts = allPlaylists.map((playlist) => {
+      const problemCounts = playlist.problemInPlaylist.reduce(
+        (acc, { problem }) => {
+          if (problem.difficulty === "EASY") {
+            acc.easyCount += 1;
+          } else if (problem.difficulty === "MEDIUM") {
+            acc.mediumCount += 1;
+          } else if (problem.difficulty === "HARD") {
+            acc.hardCount += 1;
+          }
+          return acc;
+        },
+        { easyCount: 0, mediumCount: 0, hardCount: 0 }
+      );
+      return {
+        ...playlist,
+        problemCounts,
+      };
+    });
     res
       .status(200)
-      .json(new ApiResponse(200, "playlist fetched successfully", allPaylists));
+      .json(
+        new ApiResponse(
+          200,
+          "playlist fetched successfully",
+          playlistsWithCounts
+        )
+      );
   } catch (error) {
     res
       .status(error.statusCode || 500)
@@ -90,9 +120,22 @@ export const getPlaylistDetail = asyncHandler(async (req, res) => {
     if (!playlist) {
       throw new ErrorHandler(404, "Unable to fetch playlist details");
     }
+    const formattedRes = playlist.problemInPlaylist.map(
+      ({ problem, ...rest }) => {
+        return {
+          ...rest,
+          ...problem,
+        };
+      }
+    );
     res
       .status(200)
-      .json(new ApiResponse(200, "Playlist fetched successfully", playlist));
+      .json(
+        new ApiResponse(200, "Playlist fetched successfully", {
+          ...playlist,
+          problemInPlaylist: formattedRes,
+        })
+      );
   } catch (error) {
     res
       .status(error.statusCode || 500)

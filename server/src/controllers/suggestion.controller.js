@@ -7,7 +7,13 @@ import asyncHandler from "../utils/asyncHandler.js";
 export const userSuggestion = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    const { days, hoursPerDay, targetCompany } = req.body;
+    const {
+      days,
+      hoursPerDay,
+      targetCompany,
+      title,
+      description = undefined,
+    } = req.body;
     const gemeni = new GoogleGenerativeAI(process.env.GEMENI_API);
     const model = gemeni.getGenerativeModel({
       model: "gemini-1.5-flash-latest",
@@ -70,8 +76,9 @@ Rules:
     const problemList = JSON.parse(cleanedText);
     const playlist = await db.playlist.create({
       data: {
-        title: `Study Plan - ${days} Days`,
+        title: title ? title : `Study Plan - ${days} Days`,
         userId: user.id,
+        description,
       },
     });
     if (!playlist) {
@@ -94,6 +101,3 @@ Rules:
       .json({ message: error.message, success: error.success || false });
   }
 });
-
-
-

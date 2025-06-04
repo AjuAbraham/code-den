@@ -3,16 +3,19 @@ import { getAllProblems, topContributers } from "../lib/axios.js";
 import { useNavigate } from "react-router-dom";
 import ProblemList from "../components/ProblemList";
 import { useState } from "react";
+import authStore from "../store/authStore.js";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { authUser } = authStore();
   const [filter, setFilter] = useState({
     difficulty: "",
     tags: [],
     companies: [],
     status: "",
   });
-  const { 
+
+  const {
     data: initData,
     isLoading: initLoading,
     isError: initError,
@@ -22,6 +25,7 @@ const Home = () => {
     queryFn: topContributers,
     staleTime: 1000 * 60 * 5,
   });
+
   const {
     data: problemList,
     isLoading: problemLoading,
@@ -32,13 +36,15 @@ const Home = () => {
     queryFn: getAllProblems,
     staleTime: 1000 * 60 * 5,
   });
+
   if (initLoading || problemLoading) {
     return (
-      <div className="flex h-fit  justify-center mt-20">
-        <span className="loading  text-xl">Loading...</span>
+      <div className="flex h-screen justify-center items-center">
+        <span className="loading text-xl">Loading...</span>
       </div>
     );
   }
+
   if (initError || problemError) {
     return (
       <div className="flex flex-col items-center justify-center mt-20 gap-4 text-center">
@@ -51,7 +57,7 @@ const Home = () => {
               onClick={() => refetchInit()}
               className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow"
             >
-              Retry Init Data
+              Retry Data
             </button>
           )}
           {problemError && (
@@ -66,64 +72,80 @@ const Home = () => {
       </div>
     );
   }
+
   const topUsers = initData?.response || [];
- 
+
   return (
-    <div className="p-6 max-w-6xl mx-auto flex flex-col gap-2 ">
-      <h1 className="text-4xl font-extrabold z-10 text-center mb-6">
+    <div className="flex flex-col gap-6">
+      <h1 className="text-4xl mt-4 font-extrabold z-10 text-center">
+        Hi! <span className="text-primary">{authUser.username}, </span>
         Welcome to <span className="text-primary">Code Den</span>
       </h1>
-      <div className="flex flex-col gap-3">
-        <h2 className="text-2xl font-bold text-white mb-4">
-          🔥 Top Consistent Users
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {topUsers.map((user) => (
-            <div
-              key={user.id}
-              onClick={() => navigate(`/user/:${user.id}`)}
-              className="bg-slate-800 cursor-pointer border border-slate-700 rounded-2xl shadow-lg p-4 flex items-center gap-4 hover:shadow-xl transition-shadow"
-            >
-              {user.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.username}
-                  className="h-14 w-14 rounded-full object-cover border border-slate-600"
-                />
-              ) : (
-                <img
-                  src={"https://avatar.iran.liara.run/public/boy"}
-                  alt={"avatar"}
-                  className="h-14 w-14 rounded-full object-cover border border-slate-600"
-                />
-              )}
-              <div className="flex flex-col items-start gap-1">
-                <h3 className="text-white font-semibold text-lg">
-                  {user.username.charAt(0).toUpperCase() +
-                    user.username.slice(1).toLowerCase()}
-                </h3>
-                <p className="text-orange-400 text-sm flex items-center gap-1">
-                  🔥 Max Streak:{" "}
-                  <span className="font-bold">{user.streak}</span>
-                </p>
-              </div>
-            </div>
-          ))}
+
+      <div
+        onClick={() => navigate("/sheets")}
+        className="cursor-pointer group mx-60 relative overflow-hidden border border-primary bg-slate-800 hover:bg-slate-700 text-white rounded-2xl p-6 transition-shadow shadow hover:shadow-xl"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-1 group-hover:text-orange-400 transition">
+              📚 Explore Curated Sheets
+            </h2>
+            <p className="text-slate-400 text-sm max-w-md">
+              Unlock handpicked sets of coding problems grouped by topic,
+              company, or difficulty. Stay consistent and track your progress!
+            </p>
+          </div>
+          <button className="bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-orange-400 transition w-fit">
+            Browse Sheets
+          </button>
         </div>
       </div>
-      <div>
-        {problemLoading ? (
-          <div className="flex h-fit  justify-center mt-20">
-            <span className="loading  text-xl">Loading...</span>
-          </div>
-        ) : (
+
+      {/* Main Content Layout */}
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Problem List Area */}
+        <div className="flex-1">
           <ProblemList
             problemList={problemList?.response}
             setFilter={setFilter}
             filter={filter}
             refetchProblems={refetchProblems}
           />
-        )}
+        </div>
+
+        {/* Sidebar Area for Top Users */}
+        <div className="w-full lg:w-80 mr-2 shrink-0 bg-slate-900 rounded-2xl p-4 border border-slate-700 shadow-md">
+          <h2 className="text-xl font-bold text-white mb-4">
+            🔥 Top Consistent Users
+          </h2>
+          <div className="flex flex-col gap-4">
+            {topUsers.map((user) => (
+              <div
+                key={user.id}
+                onClick={() => navigate(`/user/:${user.id}`)}
+                className="bg-slate-800 cursor-pointer border border-slate-700 rounded-xl p-3 flex items-center gap-3 hover:shadow-lg transition"
+              >
+                <img
+                  src={
+                    user.avatar || "https://avatar.iran.liara.run/public/boy"
+                  }
+                  alt={user.username}
+                  className="h-12 w-12 rounded-full object-cover border border-slate-600"
+                />
+                <div>
+                  <p className="text-white font-medium">
+                    {user.username.charAt(0).toUpperCase() +
+                      user.username.slice(1).toLowerCase()}
+                  </p>
+                  <p className="text-orange-400 text-sm">
+                    🔥 Max Streak: <strong>{user.streak}</strong>
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
