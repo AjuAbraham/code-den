@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { deletePlaylist, getOnePlaylist } from "../lib/axios";
-import { Trash2 } from "lucide-react";
+import { AlignJustify, Trash2 } from "lucide-react";
 import moment from "moment";
 import ProblemTable from "./ProblemTable";
 import { toast } from "react-hot-toast";
-
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 const SheetPage = () => {
   const { playlistId } = useParams();
   const queryClient = useQueryClient();
@@ -52,7 +53,79 @@ const SheetPage = () => {
   }
 
   const playlist = data?.response;
+  const handleDownloadExcel = () => {
+    const problems = playlist.problemInPlaylist || [];
 
+    const worksheetData = problems.map((problem, index) => ({
+      "SNo.": index + 1,
+      Title: problem.title,
+      Difficulty: problem.difficulty,
+      Tags: problem.tags.join(", ") || "",
+      Company: problem.companies.join(", ") || "",
+    }));
+    // Convert data to sheet format (header: 1 gives raw 2D array)
+    const dataTable = XLSX.utils.sheet_to_json(
+      XLSX.utils.json_to_sheet(worksheetData),
+      { header: 1 }
+    );
+
+    // Playlist title row and an empty row after it
+    const title = [[playlist.title]];
+    const emptyRow = [[]];
+    const combinedData = [...title, ...emptyRow, ...dataTable];
+
+    const worksheet = XLSX.utils.aoa_to_sheet(combinedData);
+
+    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
+
+    worksheet["A1"].s = {
+      font: { bold: true },
+      alignment: { horizontal: "center", vertical: "center" },
+    };
+
+    const headerRow = combinedData[2];
+    headerRow.forEach((_, colIndex) => {
+      const cellAddress = XLSX.utils.encode_cell({ r: 2, c: colIndex });
+      if (worksheet[cellAddress]) {
+        worksheet[cellAddress].s = {
+          font: { bold: true },
+          alignment: { horizontal: "center" },
+          AlignJustify: "center",
+        };
+      }
+    });
+    worksheet["!cols"] = [
+      { wch: 5 },
+      { wch: 60 },
+      { wch: 10 },
+      { wch: 40 },
+      { wch: 40 },
+    ];
+    const headerCellKeys = Object.keys(worksheetData[0]);
+    headerCellKeys.forEach((_, idx) => {
+      const cellAddress = XLSX.utils.encode_cell({ c: idx, r: 0 });
+      if (worksheet[cellAddress]) {
+        worksheet[cellAddress].s = {
+          font: { bold: true },
+          alignment: { horizontal: "center", vertical: "center" },
+        };
+      }
+    });
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "DSA Sheet");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+      cellStyles: true,
+    });
+
+    const blob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+
+    saveAs(blob, `${playlist.title}-sheet.xlsx`);
+  };
   return (
     <div className="min-h-screen w-full bg-slate-900 text-white px-4 py-6">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -69,9 +142,17 @@ const SheetPage = () => {
             {playlist.title}
           </h1>
           <p className="text-slate-300 mt-2">{playlist.description}</p>
-          <p className="text-sm text-slate-500 mt-1">
-            Created on {moment(playlist.createdAt).format("DD MMMM, YYYY")}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-slate-500 mt-1">
+              Created on {moment(playlist.createdAt).format("DD MMMM, YYYY")}
+            </p>
+            <button
+              onClick={handleDownloadExcel}
+              className="btn btn-success btn-sm md:btn-md text-white font-semibold shadow-md hover:shadow-lg transition"
+            >
+              Download Excel
+            </button>
+          </div>
         </div>
 
         {/* Problems Table */}
