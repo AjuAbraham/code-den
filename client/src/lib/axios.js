@@ -85,4 +85,18 @@ export const getOnePlaylist = async (playlistId) => {
   const res = await api.get(`playlists/get/${playlistId}`);
   return res.data;
 };
+export const deleteProblemFromList = async (id) => {
+  const res = await api.delete(`problems/delete-problem/${id}`);
+  return res.data;
+};
+export const deleteProblemFromPlaylist = async ({ playlistId, problemIds }) => {
+  const res = await api.post(`playlists/${playlistId}/remove-problem`, {
+    problemIds: [problemIds],
+  });
+  return res.data;
+};
+export const deletePlaylist = async ( playlistId ) => {
+  const res = await api.delete(`playlists/${playlistId}/delete-playlist`);
+  return res.data;
+};
 export default api;

@@ -1,18 +1,31 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { getOnePlaylist } from "../lib/axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { deletePlaylist, getOnePlaylist } from "../lib/axios";
 import { Trash2 } from "lucide-react";
 import moment from "moment";
 import ProblemTable from "./ProblemTable";
+import { toast } from "react-hot-toast";
 
 const SheetPage = () => {
   const { playlistId } = useParams();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["getOnePlaylist", playlistId],
     queryFn: () => getOnePlaylist(playlistId),
     staleTime: 1000 * 60 * 5,
   });
-
+  const { mutate: deletePlaylistMutation } = useMutation({
+    mutationFn: () => deletePlaylist(playlistId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["allSheets"] });
+      navigate(-1, { replace: true });
+      toast.success("Problem Delted Successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
+    },
+  });
   if (isLoading) {
     return (
       <div className="flex h-screen w-full justify-center items-center">
@@ -46,7 +59,7 @@ const SheetPage = () => {
         {/* Playlist Header */}
         <div className="bg-slate-800 border border-slate-700 p-6 rounded-xl relative">
           <button
-            // onClick={handleDelete}
+            onClick={() => deletePlaylistMutation()}
             className="absolute top-4 right-4 text-red-500 hover:text-red-700 transition"
           >
             <Trash2 size={20} />
@@ -62,7 +75,10 @@ const SheetPage = () => {
         </div>
 
         {/* Problems Table */}
-        <ProblemTable problemList={playlist.problemInPlaylist} />
+        <ProblemTable
+          problemList={playlist.problemInPlaylist}
+          playlistId={playlist.id}
+        />
       </div>
     </div>
   );

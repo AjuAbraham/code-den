@@ -2,17 +2,44 @@ import { Link, useLocation } from "react-router-dom";
 import { Bookmark, PencilIcon, TrashIcon } from "lucide-react";
 import authStore from "../store/authStore.js";
 import { useState } from "react";
-
-const ProblemTable = ({ problemList = [] }) => {
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import {
+  deleteProblemFromList,
+  deleteProblemFromPlaylist,
+} from "../lib/axios.js";
+const ProblemTable = ({ problemList = [], playlistId }) => {
   const { authUser } = authStore();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(problemList.length / itemsPerPage);
   const { pathname } = useLocation();
+  const queryClient = useQueryClient();
   const paginatedProblems = problemList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  const { mutate: deleteProblemFromListMutate } = useMutation({
+    mutationFn: (id) => deleteProblemFromList(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["getAllProblem"] });
+      toast.success("Problem Delted Successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
+    },
+  });
+  const { mutate: deleteProblemFromPlaylistMutate } = useMutation({
+    mutationFn: (problemId) =>
+      deleteProblemFromPlaylist({ playlistId, problemIds: problemId }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["getOnePlaylist"] });
+      toast.success("Problem Delted Successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
+    },
+  });
   const isSheetPage = pathname.includes("/sheets");
   return (
     <div className="w-full  mt-6">
@@ -96,7 +123,15 @@ const ProblemTable = ({ problemList = [] }) => {
                       <div className="flex gap-2">
                         {authUser?.role === "ADMIN" && (
                           <>
-                            <button className="btn btn-sm btn-error btn-circle">
+                            <button
+                              onClick={() => {
+                                console.log("here");
+                                !isSheetPage
+                                  ? deleteProblemFromListMutate(problem.id)
+                                  : deleteProblemFromPlaylistMutate(problem.id);
+                              }}
+                              className="btn btn-sm btn-error btn-circle"
+                            >
                               <TrashIcon className="w-4 h-4 text-white" />
                             </button>
                             {!isSheetPage ? (
