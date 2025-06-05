@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Bookmark, PencilIcon, TrashIcon } from "lucide-react";
 import authStore from "../store/authStore.js";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import {
 } from "../lib/axios.js";
 const ProblemTable = ({ problemList = [], playlistId }) => {
   const { authUser } = authStore();
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(problemList.length / itemsPerPage);
@@ -136,10 +137,12 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                             </button>
                             {!isSheetPage ? (
                               <button
-                                className="btn btn-sm btn-warning btn-circle"
-                                disabled
+                                className="btn cursor-pointer btn-sm bg-purple-600 btn-circle"
+                                onClick={() =>
+                                  navigate(`./edit/${problem.id}`)
+                                }
                               >
-                                <PencilIcon className="w-4 h-4 text-white" />
+                                <PencilIcon className="w-4 h-4 text-white cursor-pointer" />
                               </button>
                             ) : null}
                           </>

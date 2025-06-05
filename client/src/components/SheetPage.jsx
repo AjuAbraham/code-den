@@ -148,7 +148,8 @@ const SheetPage = () => {
             </p>
             <button
               onClick={handleDownloadExcel}
-              className="btn btn-success btn-sm md:btn-md text-white font-semibold shadow-md hover:shadow-lg transition"
+              disabled={playlist.problemInPlaylist.length === 0}
+              className="btn btn-success btn-sm disabled:pointer-events-none disabled:bg-gray-600 md:btn-md text-white font-semibold shadow-md hover:shadow-lg transition"
             >
               Download Excel
             </button>

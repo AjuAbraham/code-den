@@ -12,14 +12,17 @@ import {
 } from "lucide-react";
 import Editor from "@monaco-editor/react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import problemSchema from "../schema/problemSchema";
 import { toast } from "react-hot-toast";
 import { sampledpData, sampleStringProblem } from "../lib/sampleData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProblem } from "../lib/axios.js";
-const CreateProblemForm = () => {
+import { createProblem, updateProblem } from "../lib/axios.js";
+const CreateProblemForm = ({ data = {} }) => {
   const [sampleType, setSampleType] = useState("DP");
+  const { pathname } = useLocation();
+  const isEditPage = pathname.includes("/edit");
+  const id = pathname.split("edit/")[1];
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
@@ -36,6 +39,20 @@ const CreateProblemForm = () => {
       toast.error(error.response.data.message || "Something went wrong");
     },
   });
+  const { mutate: updateMutate, isPending: isUpdating } = useMutation({
+    mutationKey: ["problem-update"],
+    mutationFn: (formData) => updateProblem({ id, formData }),
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success("Problem Updated Successfully");
+        queryClient.invalidateQueries({ queryKey: ["getAllProblem"] });
+        navigate("/", { replace: true });
+      }
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
+    },
+  });
   const {
     register,
     control,
@@ -44,27 +61,60 @@ const CreateProblemForm = () => {
     formState: { errors, dirtyFields },
   } = useForm({
     resolver: zodResolver(problemSchema),
-    defaultValues: {
-      testcases: [{ input: "", output: "" }],
-      tags: [""],
-      companies: [""],
-      hints: [""],
-      examples: {
-        JAVASCRIPT: { input: "", output: "", explanation: "" },
-        PYTHON: { input: "", output: "", explanation: "" },
-        JAVA: { input: "", output: "", explanation: "" },
-      },
-      codeSnippets: {
-        JAVASCRIPT: "function solution() {\n  // Write your code here\n}",
-        PYTHON: "def solution():\n    # Write your code here\n    pass",
-        JAVA: "public class Solution {\n    public static void main(String[] args) {\n        // Write your code here\n    }\n}",
-      },
-      referenceSolutions: {
-        JAVASCRIPT: "// Add your reference solution here",
-        PYTHON: "# Add your reference solution here",
-        JAVA: "// Add your reference solution here",
-      },
-    },
+    defaultValues:
+      Object.keys(data).length > 0
+        ? {
+            title: data.title || "",
+            description: data.description || "",
+            difficulty: data.difficulty || "",
+            testcases: data.testcases || [{ input: "", output: "" }],
+            tags: data.tags || [""],
+            companies: data.companies || [""],
+            hints: data.hints || [""],
+            examples: data.examples || {
+              JAVASCRIPT: { input: "", output: "", explanation: "" },
+              PYTHON: { input: "", output: "", explanation: "" },
+              JAVA: { input: "", output: "", explanation: "" },
+            },
+            codeSnippets: data.codeSnippets || {
+              JAVASCRIPT: "function solution() {\n  // Write your code here\n}",
+              PYTHON: "def solution():\n    # Write your code here\n    pass",
+              JAVA: "public class Solution {\n    public static void main(String[] args) {\n        // Write your code here\n    }\n}",
+            },
+            referenceSolutions: data.referenceSolutions || {
+              JAVASCRIPT: "// Add your reference solution here",
+              PYTHON: "# Add your reference solution here",
+              JAVA: "// Add your reference solution here",
+            },
+            constraints: data.constraints || "",
+            editorial: data.editorial || "",
+          }
+        : {
+            title: "",
+            description: "",
+            difficulty: "",
+            testcases: [{ input: "", output: "" }],
+            tags: [""],
+            companies: [""],
+            hints: [""],
+            examples: {
+              JAVASCRIPT: { input: "", output: "", explanation: "" },
+              PYTHON: { input: "", output: "", explanation: "" },
+              JAVA: { input: "", output: "", explanation: "" },
+            },
+            codeSnippets: {
+              JAVASCRIPT: "function solution() {\n  // Write your code here\n}",
+              PYTHON: "def solution():\n    # Write your code here\n    pass",
+              JAVA: "public class Solution {\n    public static void main(String[] args) {\n        // Write your code here\n    }\n}",
+            },
+            referenceSolutions: {
+              JAVASCRIPT: "// Add your reference solution here",
+              PYTHON: "# Add your reference solution here",
+              JAVA: "// Add your reference solution here",
+            },
+            constraints: "",
+            editorial: "",
+          },
   });
   const {
     fields: testCaseFields,
@@ -104,7 +154,8 @@ const CreateProblemForm = () => {
     control,
     name: "companies",
   });
-  const onSubmit = async (formData) => mutate(formData);
+  const onSubmit = async (formData) =>
+    isEditPage ? updateMutate(formData) : mutate(formData);
   const loadSampleData = () => {
     const sampleData = sampleType === "DP" ? sampledpData : sampleStringProblem;
     replaceHints(sampleData.hints.map((hint) => hint));
@@ -114,7 +165,7 @@ const CreateProblemForm = () => {
 
     reset(sampleData);
   };
-  const disableCreateButton = Object.keys(dirtyFields).length > 0;
+  const disableCreateButton = isEditPage && Object.keys(dirtyFields).length > 0;
   return (
     <div className="container mx-auto py-6 px-4 max-w-7xl">
       <div className="card bg-base-100 shadow-2xl rounded-xl overflow-hidden">
@@ -122,45 +173,47 @@ const CreateProblemForm = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-6 border-b border-base-200">
             <h2 className="card-title text-3xl md:text-4xl font-bold text-primary flex items-center gap-4">
               <FileText className="w-8 h-8 text-primary" />
-              Create Problem
+              {isEditPage ? "Edit Problem" : "Create Problem"}
             </h2>
-            <div className="flex flex-col md:flex-row gap-4 mt-6 md:mt-0">
-              <div className="join shadow-sm">
+            {isEditPage ? null : (
+              <div className="flex flex-col md:flex-row gap-4 mt-6 md:mt-0">
+                <div className="join shadow-sm">
+                  <button
+                    type="button"
+                    className={`btn join-item px-6 py-2 text-sm font-medium capitalize transition-colors duration-200 ${
+                      sampleType === "DP"
+                        ? "btn-primary"
+                        : "btn-ghost bg-base-200"
+                    }`}
+                    onClick={() => setSampleType("DP")}
+                    aria-pressed={sampleType === "DP"}
+                  >
+                    DP Problem
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn join-item px-6 py-2 text-sm font-medium capitalize transition-colors duration-200 ${
+                      sampleType === "string"
+                        ? "btn-primary"
+                        : "btn-ghost bg-base-200"
+                    }`}
+                    onClick={() => setSampleType("string")}
+                    aria-pressed={sampleType === "string"}
+                  >
+                    String Problem
+                  </button>
+                </div>
                 <button
                   type="button"
-                  className={`btn join-item px-6 py-2 text-sm font-medium capitalize transition-colors duration-200 ${
-                    sampleType === "DP"
-                      ? "btn-primary"
-                      : "btn-ghost bg-base-200"
-                  }`}
-                  onClick={() => setSampleType("DP")}
-                  aria-pressed={sampleType === "DP"}
+                  className="btn btn-secondary gap-2 px-6 py-2 text-sm font-medium hover:bg-secondary-focus transition-colors duration-200"
+                  onClick={loadSampleData}
+                  aria-label="Load sample data"
                 >
-                  DP Problem
-                </button>
-                <button
-                  type="button"
-                  className={`btn join-item px-6 py-2 text-sm font-medium capitalize transition-colors duration-200 ${
-                    sampleType === "string"
-                      ? "btn-primary"
-                      : "btn-ghost bg-base-200"
-                  }`}
-                  onClick={() => setSampleType("string")}
-                  aria-pressed={sampleType === "string"}
-                >
-                  String Problem
+                  <Download className="w-5 h-5" />
+                  Load Sample
                 </button>
               </div>
-              <button
-                type="button"
-                className="btn btn-secondary gap-2 px-6 py-2 text-sm font-medium hover:bg-secondary-focus transition-colors duration-200"
-                onClick={loadSampleData}
-                aria-label="Load sample data"
-              >
-                <Download className="w-5 h-5" />
-                Load Sample
-              </button>
-            </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
@@ -687,12 +740,12 @@ const CreateProblemForm = () => {
                 aria-label="Create problem"
                 disabled={!disableCreateButton || isPending}
               >
-                {isPending ? (
+                {isPending || isUpdating ? (
                   <span className="loading loading-spinner"></span>
                 ) : (
                   <CheckCircle2 className="w-6 h-6" />
                 )}
-                Create Problem
+                {isEditPage ? "Update Problem" : "Create Problem"}
               </button>
             </div>
           </form>

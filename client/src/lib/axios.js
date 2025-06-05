@@ -25,6 +25,10 @@ export const createProblem = async (formData) => {
   const res = await api.post("/problems/create", formData);
   return res.data;
 };
+export const updateProblem = async ({ id, formData }) => {
+  const res = await api.put(`/problems/update-problem/${id}`, formData);
+  return res.data;
+};
 export const getOneProblem = async (id) => {
   const res = await api.get(`/problems/get/${id}`);
   return res.data;
@@ -95,7 +99,7 @@ export const deleteProblemFromPlaylist = async ({ playlistId, problemIds }) => {
   });
   return res.data;
 };
-export const deletePlaylist = async ( playlistId ) => {
+export const deletePlaylist = async (playlistId) => {
   const res = await api.delete(`playlists/${playlistId}/delete-playlist`);
   return res.data;
 };

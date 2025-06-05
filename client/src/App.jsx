@@ -10,6 +10,7 @@ import Problem from "./pages/Problem.jsx";
 import CreateSolution from "./pages/CreateSolution.jsx";
 import Sheets from "./pages/Sheets.jsx";
 import SheetPage from "./components/SheetPage.jsx";
+import EditProblem from "./components/EditProblem.jsx";
 function App() {
   const { authUser } = authStore();
   const isAdmin = authUser?.role === "ADMIN";
@@ -25,6 +26,10 @@ function App() {
           <Route
             path="/add-problem"
             element={isAdmin ? <AddProblem /> : <Navigate to={"/"} />}
+          />
+          <Route
+            path="/edit/:id"
+            element={isAdmin ? <EditProblem /> : <Navigate to={"/"} />}
           />
           <Route
             path="/solution/create/:id"
