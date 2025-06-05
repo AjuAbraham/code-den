@@ -11,6 +11,7 @@ import CreateSolution from "./pages/CreateSolution.jsx";
 import Sheets from "./pages/Sheets.jsx";
 import SheetPage from "./components/SheetPage.jsx";
 import EditProblem from "./components/EditProblem.jsx";
+import Profile from "./pages/Profile.jsx";
 function App() {
   const { authUser } = authStore();
   const isAdmin = authUser?.role === "ADMIN";
@@ -47,6 +48,10 @@ function App() {
         <Route
           path="/login"
           element={!authUser ? <Login /> : <Navigate to={"/"} />}
+        />
+        <Route
+          path="/profile"
+          element={authUser ? <Profile /> : <Navigate to={"/login"} />}
         />
         <Route
           path="/signup"

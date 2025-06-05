@@ -43,6 +43,12 @@ export const createPlaylist = async (formData) => {
   const res = await api.post("/playlists/create", formData);
   return res.data;
 };
+export const addProblemToPlaylsit = async ({ playlistId, problemIds }) => {
+  const res = await api.post(`/playlists/${playlistId}/add-problem`, {
+    problemIds,
+  });
+  return res.data;
+};
 export const executeCode = async (payload) => {
   const res = await api.post("/execute/", payload);
   return res.data;
