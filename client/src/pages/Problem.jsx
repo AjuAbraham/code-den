@@ -1,7 +1,7 @@
 import { ChevronLeft, LogOut, Play, User } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import authStore from "../store/authStore";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   executeCode,
   getAllSolutionToProblem,
@@ -26,6 +26,7 @@ const Problem = () => {
   const [resultRes, setResultRes] = useState({});
   const [selectedLanguage, setSelectedLanguage] = useState("JAVASCRIPT");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const queryClient = useQueryClient();
   const { id } = useParams();
   const { mutate } = useMutation({
     mutationFn: logoutUser,
@@ -45,6 +46,7 @@ const Problem = () => {
     onSuccess: (data) => {
       if (data?.response) {
         toast.success(data.message);
+        queryClient.invalidateQueries({ queryKey: ["topContributer"] });
         setResultRes(data.response);
         if (buttonType === "run") {
           setButtonType(null);

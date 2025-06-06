@@ -2,8 +2,8 @@ import { useState } from "react";
 import { User, Code, LogOut } from "lucide-react";
 import authStore from "../store/authStore";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { logoutUser } from "../lib/axios";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { isUserPresent, logoutUser } from "../lib/axios";
 import { toast } from "react-hot-toast";
 import logo from "../assets/code_den.png"; // Adjust path based on your project structure
 
@@ -22,8 +22,20 @@ const NavBar = () => {
       toast.error(error.response.data.message || "Something went wrong");
     },
   });
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["getUser"],
+    queryFn: isUserPresent,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  if (isLoading) {
+    return (
+      <div className="flex h-screen justify-center items-center">
+        <span className="loading text-xl">Loading...</span>
+      </div>
+    );
+  }
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-slate-900/70 backdrop-blur border-b border-slate-800 shadow-md">
@@ -35,7 +47,7 @@ const NavBar = () => {
           aria-label="Code Den Home"
         >
           <img
-            src={logo} // Use imported logo
+            src={logo}
             alt="Code Den Logo"
             className="h-10 w-40  object-contain"
           />
@@ -47,7 +59,7 @@ const NavBar = () => {
             <div className="flex items-center gap-2 bg-orange-500/20 px-3 py-1 rounded-xl shadow-lg border border-orange-400">
               <span className="text-orange-500 text-xl">🔥</span>
               <span className="text-orange-300 font-semibold text-lg">
-                {authUser.streak}
+                {user.response.user.streak}
               </span>
             </div>
             <button
@@ -73,13 +85,15 @@ const NavBar = () => {
               <div className="text-sm font-semibold text-slate-100 border-b border-slate-700 pb-2">
                 {authUser?.username || "Guest"}
               </div>
-              <Link
-                to="/profile"
-                className="flex items-center gap-2 text-slate-200 hover:bg-indigo-500 hover:text-white px-3 py-2 rounded-md transition-colors"
-              >
-                <User className="w-4 h-4" />
-                My Profile
-              </Link>
+              {pathname.includes("/profile") ? null : (
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 text-slate-200 hover:bg-indigo-500 hover:text-white px-3 py-2 rounded-md transition-colors"
+                >
+                  <User className="w-4 h-4" />
+                  My Profile
+                </Link>
+              )}
               {authUser?.role === "ADMIN" &&
               !pathname.includes("/add-problem") ? (
                 <Link
