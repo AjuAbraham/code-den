@@ -37,11 +37,8 @@ const NavBar = () => {
           <img
             src={logo} // Use imported logo
             alt="Code Den Logo"
-            className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 object-contain"
+            className="h-10 w-40  object-contain"
           />
-          <span className="text-xl sm:text-2xl font-bold text-slate-50 hidden sm:block">
-            Code Den
-          </span>
         </Link>
 
         {/* User Dropdown */}

@@ -5,6 +5,7 @@ import CreatePlaylistModal from "./CreatePlayListModel";
 import { useMutation } from "@tanstack/react-query";
 import { createPlaylist } from "../lib/axios";
 import { toast } from "react-hot-toast";
+import authStore from "../store/authStore";
 const ProblemList = ({ problemList = [] }) => {
   const [search, setSearch] = useState("");
   const [liveFilters, setLiveFilters] = useState({
@@ -21,7 +22,7 @@ const ProblemList = ({ problemList = [] }) => {
   });
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
+  const { authUser } = authStore();
   const { data, mutate, isPending } = useMutation({
     mutationFn: (formData) => createPlaylist(formData),
     onSuccess: () => {
@@ -39,7 +40,7 @@ const ProblemList = ({ problemList = [] }) => {
       problem.tags.map((tag) => tagsSet.add(tag));
       problem.companies.map((company) => companiesSet.add(company));
     });
-    
+
     return [Array.from(tagsSet), Array.from(companiesSet)];
   }, [problemList]);
 
@@ -112,10 +113,14 @@ const ProblemList = ({ problemList = [] }) => {
           problem.difficulty?.toLowerCase() ===
             appliedFilters.difficulty.toLowerCase();
 
-        // Status filter: Include if no status applied or problem matches applied status
+        const isSolved = problem.solvedBy?.some(
+          (entry) => entry.userId === authUser?.id
+        );
+
         const matchesStatus =
           !appliedFilters.status ||
-          problem.status?.toLowerCase() === appliedFilters.status.toLowerCase();
+          (appliedFilters.status.toLowerCase() === "solved" && isSolved) ||
+          (appliedFilters.status.toLowerCase() === "unsolved" && !isSolved);
 
         // Return true only if all filters match
         return (
@@ -135,7 +140,6 @@ const ProblemList = ({ problemList = [] }) => {
       appliedFilters.status,
     ]
   );
-
   return (
     <>
       <div className="drawer drawer-end">

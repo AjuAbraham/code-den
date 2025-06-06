@@ -81,7 +81,9 @@ const Home = () => {
         Hi! <span className="text-primary">{authUser.username}, </span>
         Welcome to <span className="text-primary">Code Den</span>
       </h1>
-
+      <h1 className="text-2xl font-extrabold z-10 text-center">
+        The Choti Bachi ++
+      </h1>
       <div
         onClick={() => navigate("/sheets")}
         className="cursor-pointer group mx-60 relative overflow-hidden border border-primary bg-slate-800 hover:bg-slate-700 text-white rounded-2xl p-6 transition-shadow shadow hover:shadow-xl"

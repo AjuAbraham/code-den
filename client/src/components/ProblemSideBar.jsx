@@ -5,6 +5,7 @@ import {
   Code2,
   Pencil,
   CircleCheckBig,
+  Plus,
 } from "lucide-react";
 import SubmissionsList from "./SubmissionsList";
 import AcceptedSubmissionTab from "./AcceptedSubmissionTab";
@@ -182,7 +183,7 @@ const ProblemSideBar = ({
               />
             ) : (
               <>
-                <div className="p-2 w-full text-end">
+                <div className="p-2 w-full flex justify-end">
                   <button
                     onClick={() =>
                       navigate(`/solution/create/${problem.id}`, {
@@ -195,10 +196,10 @@ const ProblemSideBar = ({
                         submissions[0]?.status === "Accepted"
                       )
                     }
-                    className="inline-flex items-center gap-2 text-sm disabled:pointer-events-none font-medium px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-all border border-slate-600 shadow"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition text-sm"
                   >
-                    <Pencil className="w-4 h-4" />
-                    Create your solution
+                    <Plus className="w-4 h-4" />
+                    Create Solution
                   </button>
                 </div>
 

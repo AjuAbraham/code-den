@@ -12,7 +12,6 @@ const CreatePlaylistModal = ({ isOpen, onClose, onSubmit }) => {
       description: "",
     },
   });
-
   const handleFormSubmit = async (data) => {
     await onSubmit(data);
     reset();

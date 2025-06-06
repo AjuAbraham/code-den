@@ -31,12 +31,13 @@ function App() {
         setLoading(false);
       }
     };
-
-    verifyUser();
+    if (!authUser) {
+      verifyUser();
+    }
   }, [setUser, navigate]);
   if (loading) {
     return (
-       <div className="flex h-screen justify-center items-center bg-gray-950">
+      <div className="flex h-screen justify-center items-center bg-gray-950">
         <span className="text-lg text-gray-300 animate-pulse">Loading...</span>
       </div>
     );

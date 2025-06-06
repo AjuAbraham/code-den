@@ -59,7 +59,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
           <table className="table table-lg text-base-content">
             <thead className="bg-base-300 text-base font-semibold">
               <tr>
-                <th className="px-4 py-3">Solved</th>
+                {isSheetPage ? null : <th className="px-4 py-3">Solved</th>}
                 <th className="px-4 py-3">Title</th>
                 <th className="px-4 py-3">Tags</th>
                 <th className="px-4 py-3">Companies</th>
@@ -78,14 +78,16 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                       key={problem.id}
                       className="hover:bg-base-200 transition-colors duration-150"
                     >
-                      <td className="px-4 py-2">
-                        <input
-                          type="checkbox"
-                          checked={isSolved}
-                          readOnly
-                          className="checkbox checkbox-sm"
-                        />
-                      </td>
+                      {isSheetPage ? null : (
+                        <td className="px-4 py-2">
+                          <input
+                            type="checkbox"
+                            checked={isSolved}
+                            readOnly
+                            className="checkbox checkbox-sm"
+                          />
+                        </td>
+                      )}
                       <td className="px-4 py-2">
                         <Link
                           to={`/problem/${problem.id}`}

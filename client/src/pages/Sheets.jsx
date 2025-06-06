@@ -1,13 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { generatePlaylist, getAllSheets } from "../lib/axios.js";
+import {
+  generatePlaylist,
+  getAllSheets,
+  createPlaylist,
+} from "../lib/axios.js";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import GenerateSheet from "../components/GenerateSheet.jsx";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import CreatePlaylistModal from "../components/CreatePlayListModel.jsx";
 const Sheets = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [playlistModelOpen, setPlaylistModelOpen] = useState(false);
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["allSheets"],
@@ -22,6 +28,18 @@ const Sheets = () => {
     mutationFn: (formData) => generatePlaylist(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["allSheets"] });
+      return toast.success("Playlist Created Successfully");
+    },
+    onError: (error) => {
+      toast.error(error.response.data.message || "Something went wrong");
+    },
+  });
+
+  const { mutate: createPlaylistMutation } = useMutation({
+    mutationFn: (formData) => createPlaylist(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allSheets"] });
+      navigate("../sheets");
       return toast.success("Playlist Created Successfully");
     },
     onError: (error) => {
@@ -57,6 +75,10 @@ const Sheets = () => {
     );
   }
 
+  const handleCreatePlaylist = async (data) => {
+    createPlaylistMutation(data);
+  };
+
   return (
     <>
       <div className="p-6">
@@ -82,7 +104,14 @@ const Sheets = () => {
             </button>
           </div>
         </div>
-
+        <div className="flex w-full justify-end mb-4">
+          <button
+            className="btn btn-primary gap-2"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            Create Playlist
+          </button>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {data?.response?.map((sheet) => {
             const { problemCounts } = sheet;
@@ -137,6 +166,11 @@ const Sheets = () => {
         onClose={() => setPlaylistModelOpen(false)}
         onSubmit={(data) => mutate(data)}
         createLoading={isPending}
+      />
+      <CreatePlaylistModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePlaylist}
       />
     </>
   );

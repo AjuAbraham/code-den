@@ -7,7 +7,7 @@ const Login = () => {
         <div className="flex items-center justify-center h-full">
           <AuthUI
             title="Welcome Back to Code Den!!"
-            subtitle="Stay Sharp Stay Consistent."
+            subtitle="Chai Leao!! Code Apko Hi Karna He!!!"
           />
         </div>
         <div className="flex items-start mt-16 justify-center">

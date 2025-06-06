@@ -62,22 +62,21 @@ const SheetPage = () => {
       Difficulty: problem.difficulty,
       Tags: problem.tags.join(", ") || "",
       Company: problem.companies.join(", ") || "",
+      "Problem Link": `http://localhost:5173/problem/${problem.id}`,
     }));
-    // Convert data to sheet format (header: 1 gives raw 2D array)
+
     const dataTable = XLSX.utils.sheet_to_json(
       XLSX.utils.json_to_sheet(worksheetData),
       { header: 1 }
     );
 
-    // Playlist title row and an empty row after it
     const title = [[playlist.title]];
     const emptyRow = [[]];
     const combinedData = [...title, ...emptyRow, ...dataTable];
 
     const worksheet = XLSX.utils.aoa_to_sheet(combinedData);
 
-    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
-
+    worksheet["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
     worksheet["A1"].s = {
       font: { bold: true },
       alignment: { horizontal: "center", vertical: "center" },
@@ -90,27 +89,19 @@ const SheetPage = () => {
         worksheet[cellAddress].s = {
           font: { bold: true },
           alignment: { horizontal: "center" },
-          AlignJustify: "center",
         };
       }
     });
+
     worksheet["!cols"] = [
-      { wch: 5 },
-      { wch: 60 },
-      { wch: 10 },
-      { wch: 40 },
-      { wch: 40 },
+      { wch: 5 }, // SNo.
+      { wch: 60 }, // Title
+      { wch: 10 }, // Difficulty
+      { wch: 40 }, // Tags
+      { wch: 40 }, // Company
+      { wch: 100 }, // Problem Link
     ];
-    const headerCellKeys = Object.keys(worksheetData[0]);
-    headerCellKeys.forEach((_, idx) => {
-      const cellAddress = XLSX.utils.encode_cell({ c: idx, r: 0 });
-      if (worksheet[cellAddress]) {
-        worksheet[cellAddress].s = {
-          font: { bold: true },
-          alignment: { horizontal: "center", vertical: "center" },
-        };
-      }
-    });
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "DSA Sheet");
 
