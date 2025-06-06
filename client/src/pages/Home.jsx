@@ -115,7 +115,7 @@ const Home = () => {
         </div>
 
         {/* Sidebar Area for Top Users */}
-        <div className="w-full lg:w-80 mr-2 shrink-0 bg-slate-900 rounded-2xl p-4 border border-slate-700 shadow-md">
+        <div className="w-full lg:w-80 mr-2 h-[500px] shrink-0 bg-slate-900 rounded-2xl p-4 border border-slate-700 shadow-md">
           <h2 className="text-xl font-bold text-white mb-4">
             🔥 Top Consistent Users
           </h2>
@@ -123,7 +123,7 @@ const Home = () => {
             {topUsers.map((user) => (
               <div
                 key={user.id}
-                onClick={() => navigate(`/user/:${user.id}`)}
+                onClick={() => navigate(`/user/${user.id}`)}
                 className="bg-slate-800 cursor-pointer border border-slate-700 rounded-xl p-3 flex items-center gap-3 hover:shadow-lg transition"
               >
                 <img

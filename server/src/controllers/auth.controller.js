@@ -5,7 +5,7 @@ import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { UserRole } from "../generated/prisma/index.js";
 import jwt from "jsonwebtoken";
-
+import moment from "moment";
 export const registerUser = asyncHandler(async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -128,7 +128,89 @@ export const logoutUser = asyncHandler((req, res) => {
   }
 });
 
-export const checkUser = asyncHandler((req, res) => {
+export const checkUser = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const paramId = req.params?.id;
+    const targetId = paramId ? paramId : userId;
+    const userData = await db.user.findUnique({
+      where: { id: targetId },
+      include: {
+        solvedProblems: {
+          include: {
+            problem: {
+              select: {
+                id: true,
+                title: true,
+                difficulty: true,
+              },
+            },
+          },
+        },
+        DailyActivity: {
+          orderBy: {
+            date: "asc",
+          },
+        },
+      },
+    });
+
+    const difficultyCount = {
+      EASY: 0,
+      MEDIUM: 0,
+      HARD: 0,
+    };
+
+    const allSolved = userData?.solvedProblems || [];
+
+    allSolved.forEach((entry) => {
+      const difficulty = entry.problem.difficulty;
+      if (difficultyCount[difficulty] !== undefined) {
+        difficultyCount[difficulty]++;
+      }
+    });
+
+    const recentlySolved = [...allSolved]
+      .sort((a, b) => moment(b.createdAt).unix() - moment(a.createdAt).unix())
+      .slice(0, 5)
+      .map((entry) => ({
+        problemId: entry.problem.id,
+        title: entry.problem.title,
+        difficulty: entry.problem.difficulty,
+        solvedAt: moment(entry.createdAt).format("YYYY-MM-DD HH:mm:ss"),
+      }));
+
+    const problemCounts = await db.problem.groupBy({
+      by: ["difficulty"],
+      _count: {
+        difficulty: true,
+      },
+    });
+
+    const totalProblems = {
+      EASY: 0,
+      MEDIUM: 0,
+      HARD: 0,
+    };
+
+    problemCounts.forEach((entry) => {
+      totalProblems[entry.difficulty] = entry._count.difficulty;
+    });
+
+    res.status(200).json(
+      new ApiResponse(200, "User authenticated successfully", {
+        ...userData,
+        difficultyCount,
+        recentlySolved,
+        totalProblems,
+      })
+    );
+  } catch (error) {
+    console.error("checkUser error", error);
+    res.status(500).json(new ApiResponse(500, "Internal Server Error"));
+  }
+});
+export const verifyUser = asyncHandler((req, res) => {
   try {
     const user = req.user;
     const { password, updatedAt, createdAt, ...restUserData } = user;

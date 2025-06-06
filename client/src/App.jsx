@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -12,9 +12,35 @@ import Sheets from "./pages/Sheets.jsx";
 import SheetPage from "./components/SheetPage.jsx";
 import EditProblem from "./components/EditProblem.jsx";
 import Profile from "./pages/Profile.jsx";
+import { useEffect, useState } from "react";
+import { isUserPresent } from "../src/lib/axios.js";
 function App() {
-  const { authUser } = authStore();
+  const [loading, setLoading] = useState(true);
+  const { authUser, setUser } = authStore();
   const isAdmin = authUser?.role === "ADMIN";
+  const navigate = useNavigate();
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const data = await isUserPresent();
+        setUser(data.response.user);
+      } catch (err) {
+        setUser(null);
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyUser();
+  }, [setUser, navigate]);
+  if (loading) {
+    return (
+       <div className="flex h-screen justify-center items-center bg-gray-950">
+        <span className="text-lg text-gray-300 animate-pulse">Loading...</span>
+      </div>
+    );
+  }
   return (
     <div className="h-screen w-full flex flex-col">
       <Toaster position="top-right" reverseOrder={false} />
@@ -44,15 +70,20 @@ function App() {
             path="/sheets/:playlistId"
             element={authUser ? <SheetPage /> : <Navigate to={"/login"} />}
           />
+          <Route
+            path="/profile"
+            element={authUser ? <Profile /> : <Navigate to={"/login"} />}
+          />
+          <Route
+            path="/user/:id"
+            element={authUser ? <Profile /> : <Navigate to={"/login"} />}
+          />
         </Route>
         <Route
           path="/login"
           element={!authUser ? <Login /> : <Navigate to={"/"} />}
         />
-        <Route
-          path="/profile"
-          element={authUser ? <Profile /> : <Navigate to={"/login"} />}
-        />
+
         <Route
           path="/signup"
           element={!authUser ? <Signup /> : <Navigate to={"/"} />}

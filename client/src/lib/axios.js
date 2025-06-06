@@ -12,6 +12,19 @@ export const loginUser = async (formData) => {
   const res = await api.post("/auth/login", formData);
   return res.data;
 };
+export const isUserPresent = async () => {
+  const res = await api.get("/auth/verify");
+  return res.data;
+};
+export const userProfile = async (id) => {
+  let res;
+  if (id) {
+    res = await api.get(`/auth/check/${id}`);
+  } else {
+    res = await api.get("/auth/check");
+  }
+  return res.data;
+};
 export const logoutUser = async (user) => {
   const res = await api.post("/auth/logout", user);
   return res.data;

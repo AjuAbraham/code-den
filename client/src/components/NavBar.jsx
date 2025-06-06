@@ -5,10 +5,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "../lib/axios";
 import { toast } from "react-hot-toast";
+import logo from "../assets/code_den.png"; // Adjust path based on your project structure
+
 const NavBar = () => {
   const { authUser, setUser } = authStore();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
   const { mutate } = useMutation({
     mutationFn: () => logoutUser(),
     onSuccess: () => {
@@ -19,18 +22,24 @@ const NavBar = () => {
       toast.error(error.response.data.message || "Something went wrong");
     },
   });
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
   return (
     <nav className="sticky top-0 z-50 w-full bg-slate-900/70 backdrop-blur border-b border-slate-800 shadow-md">
       <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3">
+        <Link
+          to="/"
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          aria-label="Code Den Home"
+        >
           <img
-            src="/leetlab.svg"
-            alt="Leetlab Logo"
-            className="h-10 w-10 rounded-full bg-indigo-500/20 p-1"
+            src={logo} // Use imported logo
+            alt="Code Den Logo"
+            className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 object-contain"
           />
-          <span className="hidden md:block text-xl font-bold text-slate-50">
+          <span className="text-xl sm:text-2xl font-bold text-slate-50 hidden sm:block">
             Code Den
           </span>
         </Link>
@@ -47,6 +56,7 @@ const NavBar = () => {
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center focus:outline-none cursor-pointer"
+              aria-label="Toggle user menu"
             >
               <img
                 src={
@@ -66,7 +76,6 @@ const NavBar = () => {
               <div className="text-sm font-semibold text-slate-100 border-b border-slate-700 pb-2">
                 {authUser?.username || "Guest"}
               </div>
-
               <Link
                 to="/profile"
                 className="flex items-center gap-2 text-slate-200 hover:bg-indigo-500 hover:text-white px-3 py-2 rounded-md transition-colors"
@@ -74,7 +83,6 @@ const NavBar = () => {
                 <User className="w-4 h-4" />
                 My Profile
               </Link>
-
               {authUser?.role === "ADMIN" &&
               !pathname.includes("/add-problem") ? (
                 <Link
@@ -85,7 +93,6 @@ const NavBar = () => {
                   Add Problem
                 </Link>
               ) : null}
-
               <button
                 onClick={() => mutate()}
                 className="w-full text-left flex items-center gap-2 text-red-500 hover:bg-red-600 hover:text-white px-3 py-2 rounded-md transition-colors"
