@@ -12,15 +12,15 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const Profile = () => {
   const { id } = useParams();
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["profile"],
+    queryKey: ["profile", id],
     queryFn: () => userProfile(id),
     staleTime: 1000 * 60 * 5,
   });
 
   if (isLoading) {
     return (
-      <div className="flex h-screen justify-center items-center bg-gray-950">
-        <span className="text-lg text-gray-300 animate-pulse">Loading...</span>
+     <div className="flex h-screen justify-center items-center">
+        <span className="loading text-xl">Loading...</span>
       </div>
     );
   }

@@ -52,15 +52,15 @@ const Problem = () => {
           setCodeActiveTab("result");
           return;
         } else {
-          queryClient.invalidateQueries({
-            queryKey: [
-              "topContributer",
-              "getUser",
-              "getAllProblem",
-              "submissionData",
-              "solutionData",
-            ],
-          });
+          [
+            "topContributer",
+            "getUser",
+            "getAllProblem",
+            "submissionData",
+            "solutionData",
+          ].forEach((key) =>
+            queryClient.invalidateQueries({ queryKey: [key] })
+          );
           setActiveTab("accepted");
         }
       }

@@ -196,7 +196,7 @@ const ProblemSideBar = ({
                         submissions[0]?.status === "Accepted"
                       )
                     }
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition text-sm"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary disabled:bg-gray-500 disabled:pointer-events-none text-white hover:bg-primary/90 transition text-sm"
                   >
                     <Plus className="w-4 h-4" />
                     Create Solution
