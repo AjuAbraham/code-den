@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import ErrorHandler from "../utils/errorHandler.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 import ApiResponse from "../utils/apiResponse.js";
 
 export const createSolution = asyncHandler(async (req, res) => {

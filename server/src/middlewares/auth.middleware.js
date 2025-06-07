@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import ErrorHandler from "../utils/errorHandler.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { db } from "../db/index.js";
 const authMiddleware = asyncHandler(async (req, res, next) => {

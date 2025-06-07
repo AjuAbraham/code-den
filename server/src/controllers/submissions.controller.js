@@ -1,7 +1,7 @@
 import { db } from "../db/index.js";
 import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import ErrorHandler from "../utils/errorHandler.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 export const getAllSubmissions = asyncHandler(async (req, res) => {
   try {

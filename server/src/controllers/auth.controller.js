@@ -1,6 +1,6 @@
 import { db } from "../db/index.js";
 import bcrypt from "bcryptjs";
-import ErrorHandler from "../utils/errorHandler.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 import ApiResponse from "../utils/apiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { UserRole } from "../generated/prisma/index.js";
