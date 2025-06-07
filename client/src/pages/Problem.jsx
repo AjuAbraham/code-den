@@ -46,7 +46,9 @@ const Problem = () => {
     onSuccess: (data) => {
       if (data?.response) {
         toast.success(data.message);
-        queryClient.invalidateQueries({ queryKey: ["topContributer"] });
+        queryClient.invalidateQueries({
+          queryKey: ["topContributer", "getUser"],
+        });
         setResultRes(data.response);
         if (buttonType === "run") {
           setButtonType(null);

@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { isUserPresent, logoutUser } from "../lib/axios";
 import { toast } from "react-hot-toast";
-import logo from "../assets/code_den.png"; // Adjust path based on your project structure
+import logo from "../assets/code_den.png"; 
 
 const NavBar = () => {
   const { authUser, setUser } = authStore();
@@ -22,20 +22,13 @@ const NavBar = () => {
       toast.error(error.response.data.message || "Something went wrong");
     },
   });
-  const { data: user, isLoading } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["getUser"],
     queryFn: isUserPresent,
     staleTime: 1000 * 60 * 5,
   });
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  if (isLoading) {
-    return (
-      <div className="flex h-screen justify-center items-center">
-        <span className="loading text-xl">Loading...</span>
-      </div>
-    );
-  }
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-slate-900/70 backdrop-blur border-b border-slate-800 shadow-md">
@@ -59,7 +52,7 @@ const NavBar = () => {
             <div className="flex items-center gap-2 bg-orange-500/20 px-3 py-1 rounded-xl shadow-lg border border-orange-400">
               <span className="text-orange-500 text-xl">🔥</span>
               <span className="text-orange-300 font-semibold text-lg">
-                {user.response.user.streak}
+                {user?.response?.user?.streak}
               </span>
             </div>
             <button
