@@ -69,11 +69,6 @@ const Sheets = () => {
       </div>
     );
   }
-  if (!data?.response?.length) {
-    return (
-      <div className="text-white text-center mt-10">No sheets available.</div>
-    );
-  }
 
   const handleCreatePlaylist = async (data) => {
     createPlaylistMutation(data);
@@ -112,54 +107,60 @@ const Sheets = () => {
             Create Playlist
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data?.response?.map((sheet) => {
-            const { problemCounts } = sheet;
-            return (
-              <div
-                key={sheet.id}
-                className="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow hover:shadow-xl transition cursor-pointer flex flex-col justify-between"
-              >
-                <div className="mb-4">
-                  <h2 className="text-xl font-bold text-white">
-                    {sheet.title}
-                  </h2>
-                  {sheet.description && (
-                    <p className="text-slate-400 text-sm mt-1">
-                      {sheet.description}
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-sm text-slate-400 mb-3">
-                  Created on {moment(sheet.createAt).format("DD MMMM,YYYY")}
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4 mb-4">
-                  <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs">
-                    Easy: {problemCounts?.easyCount || 0}
-                  </span>
-                  <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs">
-                    Medium: {problemCounts?.mediumCount || 0}
-                  </span>
-                  <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs">
-                    Hard: {problemCounts?.hardCount || 0}
-                  </span>
-                  <span className="ml-auto text-orange-400 font-semibold">
-                    {sheet.problemInPlaylist?.length ?? 0} Questions
-                  </span>
-                </div>
-
-                <button
-                  onClick={() => navigate(`/sheets/${sheet.id}`)}
-                  className="mt-auto bg-orange-500 hover:bg-orange-400 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+        {!data?.response?.length ? (
+          <div className="text-white text-center mt-10">
+            No sheets available.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {data?.response?.map((sheet) => {
+              const { problemCounts } = sheet;
+              return (
+                <div
+                  key={sheet.id}
+                  className="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow hover:shadow-xl transition cursor-pointer flex flex-col justify-between"
                 >
-                  View Sheet
-                </button>
-              </div>
-            );
-          })}
-        </div>
+                  <div className="mb-4">
+                    <h2 className="text-xl font-bold text-white">
+                      {sheet.title}
+                    </h2>
+                    {sheet.description && (
+                      <p className="text-slate-400 text-sm mt-1">
+                        {sheet.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-sm text-slate-400 mb-3">
+                    Created on {moment(sheet.createAt).format("DD MMMM,YYYY")}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 mb-4">
+                    <span className="bg-green-600 text-white px-3 py-1 rounded-full text-xs">
+                      Easy: {problemCounts?.easyCount || 0}
+                    </span>
+                    <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs">
+                      Medium: {problemCounts?.mediumCount || 0}
+                    </span>
+                    <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs">
+                      Hard: {problemCounts?.hardCount || 0}
+                    </span>
+                    <span className="ml-auto text-orange-400 font-semibold">
+                      {sheet.problemInPlaylist?.length ?? 0} Questions
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={() => navigate(`/sheets/${sheet.id}`)}
+                    className="mt-auto bg-orange-500 hover:bg-orange-400 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+                  >
+                    View Sheet
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
       <GenerateSheet
         isOpen={playlistModelOpen}
