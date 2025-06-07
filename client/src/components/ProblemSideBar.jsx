@@ -102,6 +102,18 @@ const ProblemSideBar = ({
               ) : null}
             </div>
             <p className="text-base mb-6">{problem.description}</p>
+            {problem.companies && problem.companies.length > 0 && (
+              <div className="flex flex-wrap gap-3 mb-6 mt-2">
+                {problem.companies.map((company, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg hover:scale-105 hover:shadow-purple-500/50 transition-transform duration-200 ease-in-out"
+                  >
+                    {company}
+                  </span>
+                ))}
+              </div>
+            )}
             {problem.examples && (
               <>
                 <h3 className="text-xl font-bold mb-4">Examples:</h3>
