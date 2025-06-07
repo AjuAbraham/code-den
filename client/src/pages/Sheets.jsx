@@ -9,7 +9,7 @@ import moment from "moment";
 import GenerateSheet from "../components/GenerateSheet.jsx";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import CreatePlaylistModal from "../components/CreatePlaylistModal.jsx";
+import CreatePlaylistModal from "../components/CreatePlaylistModel.jsx";
 const Sheets = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
