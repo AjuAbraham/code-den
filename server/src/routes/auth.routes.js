@@ -9,7 +9,7 @@ import {
 } from "../controllers/auth.controller.js";
 import {authMiddleware} from "../middlewares/auth.middleware.js";
 
-const authRouter = Router();
+const authRouter = Router()
 
 authRouter.post("/register", registerUser);
 authRouter.post("/login", loginUser);
