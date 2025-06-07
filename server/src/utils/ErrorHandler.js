@@ -2,7 +2,7 @@ class ErrorHandler extends Error {
   constructor(
     statusCode = 400,
     message = "Something went wrong",
-    error = [],
+    error = [], 
     stack = ""
   ) {
     super(message);
