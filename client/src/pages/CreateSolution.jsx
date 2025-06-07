@@ -4,10 +4,11 @@ import { useState } from "react";
 import { CircleX, Send } from "lucide-react";
 import stateStore from "../store/stateStore";
 import { toast } from "react-hot-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { submitSolution } from "../lib/axios";
 const CreateSolution = () => {
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const { tags } = stateStore();
   const [addTags, setAddedTags] = useState([]);
   const { state } = useLocation();
@@ -44,6 +45,9 @@ ${code || ""}
     mutationFn: (formData) => submitSolution(formData),
     onSuccess: (data) => {
       if (data.success) {
+        ["solutionData"].forEach((key) =>
+          queryClient.invalidateQueries({ queryKey: [key] })
+        );
         toast.success(data.message || "Successfully created solution");
         navigate(-1);
       }
