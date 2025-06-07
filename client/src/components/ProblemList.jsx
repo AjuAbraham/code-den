@@ -1,7 +1,7 @@
 import { Search, Filter, CircleX, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import ProblemTable from "./ProblemTable";
-import CreatePlaylistModal from "./CreatePlayListModel";
+import CreatePlaylistModal from "./CreatePlaylistModel";
 import { useMutation } from "@tanstack/react-query";
 import { createPlaylist } from "../lib/axios";
 import { toast } from "react-hot-toast";
