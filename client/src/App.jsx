@@ -26,7 +26,6 @@ function App() {
         setUser(data.response.user);
       } catch (err) {
         setUser(null);
-        navigate("/login");
       } finally {
         setLoading(false);
       }
