@@ -26,7 +26,7 @@ const CodeEditor = ({
         })) || []
       );
     }
-  }, [problem, selectedLanguage]);
+  }, [problem, selectedLanguage, setCode]);
 
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
@@ -46,7 +46,7 @@ const CodeEditor = ({
   const { result, allPassed } = resultRes || {};
 
   return (
-    <div className="h-[calc(100vh-120px)] w-full flex flex-col">
+    <div className="h-[calc(100dvh-120px)] w-full flex flex-col">
       <PanelGroup direction="vertical" className="h-full w-full">
         {/* Top Panel - Editor */}
         <Panel defaultSize={65} minSize={30}>
@@ -55,13 +55,13 @@ const CodeEditor = ({
             <div className="flex items-center gap-2">
               <label
                 htmlFor="language"
-                className="text-white font-semibold text-sm"
+                className="text-white font-semibold text-[14px]"
               >
                 Language:
               </label>
               <select
                 id="language"
-                className="bg-slate-800 text-white border border-slate-600 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="bg-slate-800 text-white border border-slate-600 rounded-md px-3 py-1 text-[14px] focus:outline-none focus:ring-2 focus:ring-orange-400"
                 value={selectedLanguage}
                 onChange={handleLanguageChange}
               >
@@ -76,7 +76,7 @@ const CodeEditor = ({
               onClick={() =>
                 setCode(problem.codeSnippets?.[selectedLanguage] || "")
               }
-              className="flex items-center cursor-pointer gap-1 text-sm bg-slate-800 text-slate-300 hover:text-orange-400 border border-slate-600 hover:border-orange-400 rounded-md px-3 py-1 transition-all"
+              className="flex items-center cursor-pointer gap-1 text-[14px] bg-slate-800 text-slate-300 hover:text-orange-400 border border-slate-600 hover:border-orange-400 rounded-md px-3 py-1 transition-all"
             >
               <RefreshCcw className="w-4 h-4" />
               Reset
@@ -93,7 +93,7 @@ const CodeEditor = ({
               onChange={(value) => setCode(value || "")}
               options={{
                 minimap: { enabled: false },
-                fontSize: 15,
+                fontSize: 14, // Consistent font size
                 lineNumbers: "on",
                 scrollBeyondLastLine: false,
                 automaticLayout: true,
@@ -102,18 +102,18 @@ const CodeEditor = ({
           </div>
         </Panel>
 
-        <PanelResizeHandle className="h-3 w-full flex items-center ">
-          <Minus className=" h-6  w-full cursor-pointer" />
+        <PanelResizeHandle className="h-3 w-full flex items-center">
+          <Minus className="h-6 w-full cursor-pointer" />
         </PanelResizeHandle>
 
         {/* Bottom Panel - Test Cases or Result */}
-        <Panel defaultSize={35} minSize={40}>
+        <Panel defaultSize={35} minSize={20}>
           <div className="flex border-b border-slate-700 bg-slate-800 rounded-t-xl">
             {tabItems.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                className={`flex items-center gap-2 px-6 py-3 text-[14px] font-medium transition-all duration-200 border-b-2 ${
                   activeTab === tab.key
                     ? "border-orange-400 text-orange-400 bg-slate-900"
                     : "border-transparent text-slate-300 hover:text-orange-300 hover:bg-slate-700"
@@ -125,7 +125,7 @@ const CodeEditor = ({
             ))}
           </div>
 
-          <div className="bg-slate-900 border border-slate-700 border-t-0 rounded-b-xl p-4 text-white h-[calc(100%-52px)] overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-700 border-t-0 rounded-b-xl p-4 text-white h-[calc(100%-48px)] overflow-y-auto">
             {/* Tab content */}
             {activeTab === "test_case" && testcases.length > 0 ? (
               <div>
@@ -134,7 +134,7 @@ const CodeEditor = ({
                     <button
                       key={idx}
                       onClick={() => setActiveTestCase(idx)}
-                      className={`px-4 py-2 text-sm font-medium cursor-pointer ${
+                      className={`px-4 py-2 text-[14px] font-medium cursor-pointer ${
                         activeTestCase === idx
                           ? "text-orange-400 border-b-2 border-orange-400"
                           : "text-slate-300 hover:text-orange-300"
@@ -146,18 +146,18 @@ const CodeEditor = ({
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <div className="text-indigo-300 font-semibold mb-1">
+                    <div className="text-indigo-300 font-semibold mb-1 text-[14px]">
                       Input:
                     </div>
-                    <pre className="bg-black/90 px-4 py-2 rounded-lg font-mono text-sm whitespace-pre-wrap">
+                    <pre className="bg-black/90 px-4 py-2 rounded-lg font-mono text-[13px] whitespace-pre-wrap">
                       {testcases[activeTestCase].input}
                     </pre>
                   </div>
                   <div>
-                    <div className="text-indigo-300 font-semibold mb-1">
+                    <div className="text-indigo-300 font-semibold mb-1 text-[14px]">
                       Expected Output:
                     </div>
-                    <pre className="bg-black/90 px-4 py-2 rounded-lg font-mono text-sm whitespace-pre-wrap">
+                    <pre className="bg-black/90 px-4 py-2 rounded-lg font-mono text-[13px] whitespace-pre-wrap">
                       {testcases[activeTestCase].output}
                     </pre>
                   </div>
@@ -170,7 +170,7 @@ const CodeEditor = ({
                     <button
                       key={idx}
                       onClick={() => setActiveTestCase(idx)}
-                      className={`px-4 py-2  text-sm font-medium cursor-pointer ${
+                      className={`px-4 py-2 text-[14px] font-medium cursor-pointer ${
                         activeTestCase === idx
                           ? "text-orange-400 border-b-2 border-orange-400"
                           : "text-slate-300 hover:text-orange-300"
@@ -189,11 +189,11 @@ const CodeEditor = ({
                   }`}
                 >
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold text-white">
+                    <h3 className="font-semibold text-white text-[16px]">
                       Test Case {result[activeTestCase].testCase}
                     </h3>
                     <span
-                      className={`text-sm font-semibold ${
+                      className={`text-[14px] font-semibold ${
                         allPassed ? "text-green-400" : "text-red-400"
                       }`}
                     >
@@ -201,23 +201,23 @@ const CodeEditor = ({
                     </span>
                   </div>
 
-                  <div className="text-sm">
+                  <div className="text-[14px]">
                     <p className="text-indigo-300 font-medium">Your Output:</p>
-                    <pre className="bg-black/80 rounded-md p-2 mb-2 whitespace-pre-wrap">
+                    <pre className="bg-black/80 rounded-md p-2 mb-2 text-[13px] whitespace-pre-wrap">
                       {result[activeTestCase].stdout || "No output"}
                     </pre>
 
                     <p className="text-indigo-300 font-medium">
                       Expected Output:
                     </p>
-                    <pre className="bg-black/80 rounded-md p-2 mb-2 whitespace-pre-wrap">
+                    <pre className="bg-black/80 rounded-md p-2 mb-2 text-[13px] whitespace-pre-wrap">
                       {result[activeTestCase].expected || "N/A"}
                     </pre>
 
                     {result[activeTestCase].stderr && (
                       <>
                         <p className="text-red-300 font-medium">Error:</p>
-                        <pre className="bg-black/80 rounded-md p-2 mb-2 whitespace-pre-wrap">
+                        <pre className="bg-black/80 rounded-md p-2 mb-2 text-[13px] whitespace-pre-wrap">
                           {result[activeTestCase].stderr}
                         </pre>
                       </>
@@ -228,13 +228,13 @@ const CodeEditor = ({
                         <p className="text-yellow-300 font-medium">
                           Compiler Output:
                         </p>
-                        <pre className="bg-black/80 rounded-md p-2 mb-2 whitespace-pre-wrap">
+                        <pre className="bg-black/80 rounded-md p-2 mb-2 text-[13px] whitespace-pre-wrap">
                           {result[activeTestCase].compile_output}
                         </pre>
                       </>
                     )}
 
-                    <div className="text-xs text-slate-400 mt-2">
+                    <div className="text-[12px] text-slate-400 mt-2">
                       Time: {result[activeTestCase].time || "N/A"} | Memory:{" "}
                       {result[activeTestCase].memory || "N/A"}
                     </div>
@@ -242,7 +242,7 @@ const CodeEditor = ({
                 </div>
               </div>
             ) : (
-              <div className="text-slate-400 text-center">
+              <div className="text-slate-400 text-center text-[14px]">
                 No test cases available.
               </div>
             )}
