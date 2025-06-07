@@ -10,6 +10,7 @@ import {
   deleteProblemFromPlaylist,
 } from "../lib/axios.js";
 import AddToPlaylistModalOpen from "./AddToPlaylistModalOpen.jsx";
+
 const ProblemTable = ({ problemList = [], playlistId }) => {
   const { authUser } = authStore();
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
   const { mutate: deleteProblemFromListMutate } = useMutation({
     mutationFn: (id) => deleteProblemFromList(id),
     onSuccess: (data) => {
@@ -36,6 +38,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
       toast.error(error.response.data.message || "Something went wrong");
     },
   });
+
   const { mutate: deleteProblemFromPlaylistMutate } = useMutation({
     mutationFn: (problemId) =>
       deleteProblemFromPlaylist({ playlistId, problemIds: problemId }),
@@ -47,17 +50,20 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
       toast.error(error.response.data.message || "Something went wrong");
     },
   });
+
   const handleAddToPlaylist = (problemId) => {
     setSelectedProblemId(problemId);
     setIsAddToPlaylistModalOpen(true);
   };
+
   const isSheetPage = pathname.includes("/sheets");
+
   return (
     <>
-      <div className="w-full  mt-6">
+      <div className="w-full mt-6 h-[calc(100dvh-180px)] overflow-y-auto">
         <div className="overflow-x-auto rounded-xl shadow-lg bg-base-100">
-          <table className="table table-lg text-base-content">
-            <thead className="bg-base-300 text-base font-semibold">
+          <table className="w-full text-[14px] text-base-content">
+            <thead className="bg-base-300 text-[16px] font-semibold">
               <tr>
                 {isSheetPage ? null : <th className="px-4 py-3">Solved</th>}
                 <th className="px-4 py-3">Title</th>
@@ -84,14 +90,14 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                             type="checkbox"
                             checked={isSolved}
                             readOnly
-                            className="checkbox checkbox-sm"
+                            className="checkbox w-5 h-5"
                           />
                         </td>
                       )}
                       <td className="px-4 py-2">
                         <Link
                           to={`/problem/${problem.id}`}
-                          className="font-semibold hover:underline"
+                          className="text-[14px] font-semibold hover:underline"
                         >
                           {problem.title}
                         </Link>
@@ -101,19 +107,19 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                           {(problem.tags || []).map((tag, idx) => (
                             <span
                               key={idx}
-                              className="badge badge-sm bg-warning/20 text-warning font-medium border-none"
+                              className="badge bg-yellow-500/20 text-yellow-600 text-[13px] font-medium border-none px-2 py-1"
                             >
                               {tag.charAt(0).toUpperCase() + tag.slice(1)}
                             </span>
                           ))}
                         </div>
                       </td>
-                      <td className="px-4 mi py-2">
+                      <td className="px-4 py-2">
                         <div className="flex flex-wrap gap-1">
                           {(problem.companies || []).map((company, idx) => (
                             <span
                               key={idx}
-                              className="badge badge-sm bg-info/20 text-info font-medium border-none"
+                              className="badge bg-blue-500/20 text-blue-600 text-[13px] font-medium border-none px-2 py-1"
                             >
                               {company}
                             </span>
@@ -122,7 +128,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                       </td>
                       <td className="px-4 py-2">
                         <span
-                          className={`badge badge-sm font-bold border-0 ${
+                          className={`badge text-[13px] font-bold border-0 px-2 py-1 ${
                             problem.difficulty === "EASY"
                               ? "bg-green-100 text-green-600"
                               : problem.difficulty === "MEDIUM"
@@ -139,35 +145,34 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                             <>
                               <button
                                 onClick={() => {
-                                  console.log("here");
                                   !isSheetPage
                                     ? deleteProblemFromListMutate(problem.id)
                                     : deleteProblemFromPlaylistMutate(
                                         problem.id
                                       );
                                 }}
-                                className="btn btn-sm btn-error btn-circle"
+                                className="btn bg-red-600 hover:bg-red-700 text-white text-[13px] rounded-full px-4 py-2"
                               >
-                                <TrashIcon className="w-4 h-4 text-white" />
+                                <TrashIcon className="w-5 h-5" />
                               </button>
                               {!isSheetPage ? (
                                 <button
-                                  className="btn cursor-pointer btn-sm bg-purple-600 btn-circle"
+                                  className="btn bg-purple-600 hover:bg-purple-700 text-white text-[13px] rounded-full px-4 py-2"
                                   onClick={() =>
                                     navigate(`./edit/${problem.id}`)
                                   }
                                 >
-                                  <PencilIcon className="w-4 h-4 text-white cursor-pointer" />
+                                  <PencilIcon className="w-5 h-5" />
                                 </button>
                               ) : null}
                             </>
                           )}
                           {!isSheetPage ? (
                             <button
-                              className="btn btn-sm btn-outline btn-circle cursor-pointer"
+                              className="btn border-slate-600 hover:border-primary text-slate-300 hover:text-white text-[13px] rounded-full px-4 py-2"
                               onClick={() => handleAddToPlaylist(problem.id)}
                             >
-                              <Bookmark className="w-4 h-4" />
+                              <Bookmark className="w-5 h-5" />
                             </button>
                           ) : null}
                         </div>
@@ -177,7 +182,10 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                 })
               ) : (
                 <tr>
-                  <td colSpan={6} className="text-center py-6 text-gray-500">
+                  <td
+                    colSpan={6}
+                    className="text-center py-6 text-gray-500 text-[16px]"
+                  >
                     No problems found.
                   </td>
                 </tr>
@@ -190,17 +198,17 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
         <div className="flex justify-center items-center mt-6">
           <div className="join">
             <button
-              className="join-item btn btn-sm"
+              className="join-item btn bg-slate-700 hover:bg-slate-600 text-white text-[14px] px-4 py-2"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             >
               Prev
             </button>
-            <button className="join-item btn btn-sm btn-disabled">
+            <button className="join-item btn bg-slate-700 text-white text-[14px] px-4 py-2 btn-disabled">
               Page {currentPage} of {totalPages || 1}
             </button>
             <button
-              className="join-item btn btn-sm"
+              className="join-item btn bg-slate-700 hover:bg-slate-600 text-white text-[14px] px-4 py-2"
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage((prev) => prev + 1)}
             >
