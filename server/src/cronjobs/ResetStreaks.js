@@ -3,8 +3,8 @@ import { db } from "../db/index.js";
 import moment from "moment";
 
 // Cron: Every minute
-cron.schedule("* * * * *", () => {
-  console.log("Hello");
+cron.schedule("*/30 * * * * *", () => {
+  console.log("Hello every 30 seconds");
 });
 
 // Cron: Every day at midnight
