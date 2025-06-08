@@ -109,7 +109,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                           {(problem.tags || []).map((tag, idx) => (
                             <span
                               key={idx}
-                              className="badge bg-yellow-500/20 text-yellow-600 text-[12px] font-medium border-none px-2 py-1"
+                              className="badge bg-yellow-500/20 text-yellow-400 text-[12px] font-medium border-none px-2 py-1"
                             >
                               {tag.charAt(0).toUpperCase() + tag.slice(1)}
                             </span>
@@ -121,7 +121,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                           {(problem.companies || []).map((company, idx) => (
                             <span
                               key={idx}
-                              className="badge bg-blue-500/20 text-blue-600 text-[12px] font-medium border-none px-2 py-1"
+                              className="badge bg-blue-500/20 text-blue-400 text-[12px] font-medium border-none px-2 py-1"
                             >
                               {company}
                             </span>
