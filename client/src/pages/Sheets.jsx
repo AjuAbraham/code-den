@@ -27,7 +27,9 @@ const Sheets = () => {
   } = useMutation({
     mutationFn: (formData) => generatePlaylist(formData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["allSheets"] });
+      ["allSheets", "getAllProblem", "getOnePlaylist"].forEach((key) =>
+        queryClient.invalidateQueries({ queryKey: [key] })
+      );
       return toast.success("Playlist Created Successfully");
     },
     onError: (error) => {
@@ -38,7 +40,9 @@ const Sheets = () => {
   const { mutate: createPlaylistMutation } = useMutation({
     mutationFn: (formData) => createPlaylist(formData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["allSheets"] });
+      ["allSheets", "getAllProblem", "getOnePlaylist"].forEach((key) =>
+        queryClient.invalidateQueries({ queryKey: [key] })
+      );
       navigate("../sheets");
       return toast.success("Playlist Created Successfully");
     },

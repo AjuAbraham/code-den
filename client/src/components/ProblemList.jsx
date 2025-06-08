@@ -2,12 +2,13 @@ import { Search, Filter, CircleX, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 import ProblemTable from "./ProblemTable";
 import CreatePlaylistModal from "./CreatePlaylistModel";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPlaylist } from "../lib/axios";
 import { toast } from "react-hot-toast";
 import authStore from "../store/authStore";
 const ProblemList = ({ problemList = [] }) => {
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
   const [liveFilters, setLiveFilters] = useState({
     tags: [],
     companies: [],
@@ -26,6 +27,9 @@ const ProblemList = ({ problemList = [] }) => {
   const { data, mutate, isPending } = useMutation({
     mutationFn: (formData) => createPlaylist(formData),
     onSuccess: () => {
+      ["allSheets", "getAllProblem", "getOnePlaylist"].forEach((key) =>
+        queryClient.invalidateQueries({ queryKey: [key] })
+      );
       return toast.success("Playlist Created Successfully");
     },
     onError: (error) => {
