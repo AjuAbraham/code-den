@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -18,7 +18,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const { authUser, setUser } = authStore();
   const isAdmin = authUser?.role === "ADMIN";
-  const navigate = useNavigate();
+
+  const location = useLocation();
   useEffect(() => {
     const verifyUser = async () => {
       try {
@@ -30,10 +31,8 @@ function App() {
         setLoading(false);
       }
     };
-    // if (!authUser) {
-      verifyUser();
-    // }
-  }, [setUser, navigate]);
+    verifyUser();
+  }, [setUser, location.pathname]);
   if (loading) {
     return (
       <div className="flex h-screen justify-center items-center">
