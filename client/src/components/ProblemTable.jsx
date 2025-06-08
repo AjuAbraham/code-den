@@ -130,7 +130,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                       </td>
                       <td className="px-3.5 py-1.5">
                         <span
-                          className={`badge text-[12px] font-semibold border-0 px-2 py-1 ${
+                          className={`badge text-[12px] font-semibold border-0 px-3 py-1 ${
                             problem.difficulty === "EASY"
                               ? "bg-green-100 text-green-600"
                               : problem.difficulty === "MEDIUM"
@@ -153,13 +153,13 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                                         problem.id
                                       );
                                 }}
-                                className="btn bg-red-600 hover:bg-red-700 text-white text-[12px] rounded-full px-2 py-1.5"
+                                className="btn bg-red-600 hover:bg-red-700 text-white text-[12px] rounded-full px-3 py-1.5"
                               >
                                 <TrashIcon className="w-4 h-4" />
                               </button>
                               {!isSheetPage ? (
                                 <button
-                                  className="btn bg-purple-600 hover:bg-purple-700 text-white text-[12px] rounded-full px-2 py-1.5"
+                                  className="btn bg-purple-600 hover:bg-purple-700 text-white text-[12px] rounded-full px-3 py-1.5"
                                   onClick={() =>
                                     navigate(`./edit/${problem.id}`)
                                   }
