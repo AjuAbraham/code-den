@@ -30,9 +30,9 @@ function App() {
         setLoading(false);
       }
     };
-    if (!authUser) {
+    // if (!authUser) {
       verifyUser();
-    }
+    // }
   }, [setUser, navigate]);
   if (loading) {
     return (
