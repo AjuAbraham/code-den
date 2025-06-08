@@ -34,7 +34,6 @@ ${code || ""}
   const navigate = useNavigate();
   const [markdownVal, setMarkdownVal] = useState(skeleton);
   const [title, setTitle] = useState("");
-  console.log(stateStore());
   const handleAdd = (tag) => {
     setAddedTags((prev) => [...prev, tag]);
   };
