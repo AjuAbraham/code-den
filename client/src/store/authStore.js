@@ -1,7 +1,16 @@
 import { create } from "zustand";
-const authStore = create((set) => ({
-  authUser: null,
-  setUser: (user) => set({ authUser: user }),
-}));
+import { persist } from "zustand/middleware";
+
+const authStore = create(
+  persist(
+    (set) => ({
+      authUser: null,
+      setUser: (user) => set({ authUser: user }),
+    }),
+    {
+      name: "auth-storage",
+    }
+  )
+);
 
 export default authStore;

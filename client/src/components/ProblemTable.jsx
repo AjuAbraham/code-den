@@ -92,7 +92,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                             type="checkbox"
                             checked={isSolved}
                             readOnly
-                            className="checkbox w-4.5 h-4.5"
+                            className="checkbox w-6 h-6"
                           />
                         </td>
                       )}
@@ -155,7 +155,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                                 }}
                                 className="btn bg-red-600 hover:bg-red-700 text-white text-[12px] rounded-full px-3.5 py-1.5"
                               >
-                                <TrashIcon className="w-4.5 h-4.5" />
+                                <TrashIcon className="w-4 h-4" />
                               </button>
                               {!isSheetPage ? (
                                 <button
@@ -164,7 +164,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                                     navigate(`./edit/${problem.id}`)
                                   }
                                 >
-                                  <PencilIcon className="w-4.5 h-4.5" />
+                                  <PencilIcon className="w-4 h-4" />
                                 </button>
                               ) : null}
                             </>
@@ -174,7 +174,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                               className="btn border-slate-600 hover:border-primary text-slate-300 hover:text-white text-[12px] rounded-full px-3.5 py-1.5"
                               onClick={() => handleAddToPlaylist(problem.id)}
                             >
-                              <Bookmark className="w-4.5 h-4.5" />
+                              <Bookmark className="w-4 h-4" />
                             </button>
                           ) : null}
                         </div>
