@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPlaylist } from "../lib/axios";
 import { toast } from "react-hot-toast";
 import authStore from "../store/authStore";
+import stateStore from "../store/stateStore";
 const ProblemList = ({ problemList = [] }) => {
   const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
@@ -24,6 +25,7 @@ const ProblemList = ({ problemList = [] }) => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { authUser } = authStore();
+  const { setTags } = stateStore();
   const { data, mutate, isPending } = useMutation({
     mutationFn: (formData) => createPlaylist(formData),
     onSuccess: () => {
@@ -44,7 +46,8 @@ const ProblemList = ({ problemList = [] }) => {
       problem.tags.map((tag) => tagsSet.add(tag));
       problem.companies.map((company) => companiesSet.add(company));
     });
-
+    const tagArray = Array.from(tagsSet);
+    setTags(tagArray);
     return [Array.from(tagsSet), Array.from(companiesSet)];
   }, [problemList]);
 
