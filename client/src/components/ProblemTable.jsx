@@ -72,7 +72,9 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                 <th className="px-3.5 py-2.5 text-left">Tags</th>
                 <th className="px-3.5 py-2.5 text-left">Companies</th>
                 <th className="px-3.5 py-2.5 text-left">Difficulty</th>
-                <th className="px-3.5 py-2.5 text-left">Actions</th>
+                {isSheetPage ? null : (
+                  <th className="px-3.5 py-2.5 text-left">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody>
