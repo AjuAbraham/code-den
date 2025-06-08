@@ -60,7 +60,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
 
   return (
     <>
-      <div className="w-full mt-5 h-[calc(100dvh-170px)] overflow-y-auto">
+      <div className="w-full mt-5 h-[calc(100dvh-170px)]">
         <div className="overflow-x-auto rounded-xl shadow-lg bg-base-100">
           <table className="w-full text-[13px] text-base-content">
             <thead className="bg-base-300 text-[15px] font-semibold">
@@ -141,7 +141,7 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                           {problem.difficulty}
                         </span>
                       </td>
-                      <td className="px-3.5 py-1.5">
+                      <td className="px-2 py-1.5">
                         <div className="flex gap-1.5">
                           {authUser?.role === "ADMIN" && (
                             <>
@@ -153,13 +153,13 @@ const ProblemTable = ({ problemList = [], playlistId }) => {
                                         problem.id
                                       );
                                 }}
-                                className="btn bg-red-600 hover:bg-red-700 text-white text-[12px] rounded-full px-3.5 py-1.5"
+                                className="btn bg-red-600 hover:bg-red-700 text-white text-[12px] rounded-full px-2 py-1.5"
                               >
                                 <TrashIcon className="w-4 h-4" />
                               </button>
                               {!isSheetPage ? (
                                 <button
-                                  className="btn bg-purple-600 hover:bg-purple-700 text-white text-[12px] rounded-full px-3.5 py-1.5"
+                                  className="btn bg-purple-600 hover:bg-purple-700 text-white text-[12px] rounded-full px-2 py-1.5"
                                   onClick={() =>
                                     navigate(`./edit/${problem.id}`)
                                   }
