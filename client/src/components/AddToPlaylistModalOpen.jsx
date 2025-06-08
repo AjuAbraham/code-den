@@ -13,7 +13,9 @@ const AddToPlaylistModalOpen = ({ isOpen, onClose, problemId }) => {
         problemIds: [problemId],
       }),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["allSheets"] });
+      ["allSheets", "getAllProblem", "getOnePlaylist"].forEach((key) =>
+        queryClient.invalidateQueries({ queryKey: [key] })
+      );
       toast.success("Problem added Successfully");
       onClose();
     },
